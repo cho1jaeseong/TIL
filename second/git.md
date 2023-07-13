@@ -81,7 +81,7 @@ $ git push origin master
 ```
 
 ### 원격 저장소에 있는 내용 복제
--최초로 내려 받을 때
+-최초로 내려 받을 때 집
 ```bash
 $ git clone repository_url
 ```
