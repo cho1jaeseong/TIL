@@ -31,7 +31,7 @@ $ git add {path} <folder_name>/{file_name}
 $ git commit -m "commit message"
 ```
 
-## git 기초 설정
+## GIT 기초 설정
 ```bash
 $ git config --global user.email "we0620@naver.com"
 $ git config --global user.name "최재성"
