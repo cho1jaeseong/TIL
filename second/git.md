@@ -68,6 +68,21 @@ $ vim ~/.gitconfig
 ```bash
 $ git push origin master
 git hub에 코밋 보내기
+### 원격 저장소에 git 등록
+```bash
+$ git remote a {remote_nickname} {remote_url}
 ```
 
+
+
+### git 원격 저장소에 업로드123123
+```bash
+$ git push origin master
+```
+
+### 원격 저장소에 있는 내용 복제
+-최초로 내려 받을 때
+```bash
+$ git clone repository_url
+```
 
