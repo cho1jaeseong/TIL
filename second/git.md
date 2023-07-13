@@ -64,6 +64,6 @@ $ vim ~/.gitconfig
 # :wq로 종료
 ```
 
-
+### git 추가사항
 
 
