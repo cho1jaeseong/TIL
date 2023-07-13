@@ -64,6 +64,10 @@ $ vim ~/.gitconfig
 # :wq로 종료
 ```
 
-### git 추가사항
+### git 추가사항qwerqwer
+```bash
+$ git push origin master
+git hub에 코밋 보내기
+```
 
 
