@@ -70,7 +70,7 @@ $ git remote a {remote_nickname} {remote_url}
 
 
 
-### git 원격 저장소에 업로드
+### git 원격 저장소에 업로드123123
 ```bash
 $ git push origin master
 ```
