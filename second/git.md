@@ -70,7 +70,7 @@ $ git push origin master
 git hub에 코밋 보내기
 ### 원격 저장소에 git 등록
 ```bash
-$ git remote a {remote_nickname} {remote_url}
+$ git remote add {remote_nickname} {remote_url}
 ```
 
 
