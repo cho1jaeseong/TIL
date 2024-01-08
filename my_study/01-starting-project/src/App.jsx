@@ -11,11 +11,11 @@ import { EXAMPLES } from './data';
 
 
 function App() {
-  const handleClick = (event) =>{
+  const handleClick = (event) => {
     setvalue(event)
 
-}
-  const [value, setvalue] = useState("")
+  }
+  const [value, setvalue] = useState()
   return (
 
     <div>
@@ -30,18 +30,21 @@ function App() {
         <section id="examples">
           <h2>Examples</h2>
           <menu>
-            <TabButton onSelect={()=>handleClick("components")} label="Components" /> 
-            <TabButton onSelect={()=>handleClick("jsx")} label="JSX" /> 
-            <TabButton onSelect={()=>handleClick("props")} label="Props" /> 
-            <TabButton onSelect={()=>handleClick("state")} label="State" /> 
+            <TabButton isSelected={value ==="components"} onSelect={() => handleClick("components")} label="Components" />
+            <TabButton isSelected={value ==="jsx"} onSelect={() => handleClick("jsx")} label="JSX" />
+            <TabButton isSelected={value ==="props"} onSelect={() => handleClick("props")} label="Props" />
+            <TabButton isSelected={value ==="state"} onSelect={() => handleClick("state")} label="State" />
           </menu>
+          {!value ? <p>Please select a topic</p> : <div id="tab-content">
+            <h3>{EXAMPLES[value].title}</h3>
+            <p>{EXAMPLES[value].description}</p>
+            <pre>
+              <code>
+                {EXAMPLES[value].code}
+              </code>
+            </pre>
+          </div>}
         </section>
-        Dynamic Content
-        <div>
-          {value}
-          <h1>{EXAMPLES[value].title}</h1>
-          <h2>{EXAMPLES[value].description}</h2>
-        </div>
       </main>
     </div>
   );
