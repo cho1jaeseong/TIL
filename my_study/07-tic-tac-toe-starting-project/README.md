@@ -28,3 +28,18 @@ const onClick = () =>{
     }
 
 ```
+# 불변하는 상태로 업데이트 한다는 것이 이해 X
+```javascript
+setGameTurns(prevTurns =>{
+      const updatedTurns =[...prevTurns]
+    })
+```
+
+# 변수 있는 함수 props로 넘겼을때 사용법
+{()=>onSelectSquare(rowIndex,colIndex)} 통해서 해결
+```javascript
+function handleSelectSquare(rowIndex,colIndex)
+<GameBoard  onSelectSquare={handleSelectSquare} turns={gameTurns}/>
+<button onClick={()=>onSelectSquare(rowIndex,colIndex)}>{playerSymbol}</button>
+```
+# state를 관리하거나 (쓸데없는 state 즉 한곳에 관리가능한경우나 필요 없는 경우)상위 컴포넌트에서 하위컴포넌트로, 또는 그반대로 정보(props) 보내는 방법에 대해 익숙해져야 겠다.
