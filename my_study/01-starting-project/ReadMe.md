@@ -1,4 +1,4 @@
-## 리액트 핵심 - 컴포넌트,JSX,속성,State
+## 리액트 핵심 - 컴포넌트,JSX,속성,State 01-08
 # 코드
 컴포넌트화 해서 사용 + 동적 할당{`${}`}
 컴포넌트화 해서 재사용이 가능
@@ -33,7 +33,7 @@ props를 받기
 한파일에 너무 많은 컴포넌트 X componenet폴더를 통해서 관리 Css또한 다르게 관리 가능 But Scope 를 조절 잘해야함
 Header.css 는 Header.jsx에 import 되어 있지만 App.jsx에 <header>를 만들어도 똑같이 적용이 되는 문제 
 
-```Javascript
+```javascript
 {CORE_CONCEPTS.map((concept) => <CoreConcept  {...concept} />)}
 {CORE_CONCEPTS.map((concept) => <CoreConcept title={concept.title} description={concept.description} image={concept.image} />)}
 
@@ -100,4 +100,114 @@ class X className O
     </li>
     );
 }
+```
+
+## 리액트 심화 01-09
+컴포넌트는 무조건 <div>로 감싸야 함0 이렇게 해야 ERROR X
+<Fragment> 라는 리액트에서 제공하는것이 있음 <div> 대신 사용 -과거에 사용
+<div> -> <></> 로 하여 쓸데없는 <div> 필요 X Fragment
+```javascript
+    <div>
+      <Header>
+      <main>
+      </main>
+    </div>
+```
+     <>
+      <Header>
+      <main>
+      </main>
+    </>
+```
+
+#컴포넌트에 css 적용이 안될때 존재 id 또한 props 로 전달해야 사용 가능 (id 부분)
+```javascript
+
+export default function Section({ id,title,children}){
+    console.log(children)
+    return (
+        <section id={id}>
+            <h2>{title}</h2>
+            {children}
+        </section>
+    )
+}
+```
+
+```css
+#examples {
+  margin: 3rem auto;
+}
+
+#examples h2 {
+  text-align: left;
+}
+
+#examples menu {
+  margin: 1rem 0;
+  padding: 0;
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+#examples menu button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #a18aba;
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+#examples menu button:hover {
+  background-color: #1b082f;
+  color: #ebe7ef;
+}
+
+#examples menu button.active {
+  background-color: #7925d3;
+  color: #ebe7ef;
+}
+
+```
+# 한번에 사용
+```javascript
+     <Section title="Examples" id="examples"></Section>
+
+export default function Section({title,children,...props}){
+    console.log(children)
+    return (
+        <section {...props}>
+            <h2>{title}</h2>
+            {children}
+        </section>
+    )
+}
+```
+
+
+
+# 컴포넌트 구성 짜기
+ButtonsContainer (대문자 필수)를 만들고 만들요소를 넣음 ex)"menu","div" 하면 컴포넌트로 생각
+ 
+```javascript
+export default function Tabs({children,buttons,ButtonsContainer}) {
+    const ButtonsContainer  = ButtonsContainer
+    return (
+        <>
+            <ButtonsContainer>
+                {buttons}
+            </ButtonsContainer>
+            {children}
+        </>
+    )
+}
+
+
+<Tabs ButtonsContainer="menu"
+             buttons={...}
 ```
