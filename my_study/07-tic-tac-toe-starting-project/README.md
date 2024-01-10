@@ -1,3 +1,4 @@
+## 리액트 심화 01-10
 # public에 사진 넣으면 이름만으로도 참조 가능
 ```javascript
 <img src="./public/game-logo.png" alt=""/>
@@ -43,3 +44,10 @@ function handleSelectSquare(rowIndex,colIndex)
 <button onClick={()=>onSelectSquare(rowIndex,colIndex)}>{playerSymbol}</button>
 ```
 # state를 관리하거나 (쓸데없는 state 즉 한곳에 관리가능한경우나 필요 없는 경우)상위 컴포넌트에서 하위컴포넌트로, 또는 그반대로 정보(props) 보내는 방법에 대해 익숙해져야 겠다.
+
+팀회의가 많아서 진도를 많이 못나감
+아직 할일 Redux, 연습 프로젝트,Hook또는 Custom Hook,Animation효과,Router,TypeScript
+
+#Redux 사용
+compent의 Props 들을 아주 예쁘게 관리
+다수 컴포넌트가 존재하고 props들을 계속 전달할수도 없고 에러가 나면 찾기가 쉬움
