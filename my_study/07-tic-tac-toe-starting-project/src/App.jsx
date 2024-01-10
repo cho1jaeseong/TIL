@@ -3,6 +3,7 @@ import Player from "./components/Player"
 import GameBoard from "./components/GameBoard"
 import Log from "./components/Log"
 import { WINNING_COMBINATIONS } from "./winning-combination"
+import GameOver from "./components/GameOver"
 
 function deriveActivePlayer(gameTurns){
   let currentPlayer ='X'
@@ -11,7 +12,7 @@ function deriveActivePlayer(gameTurns){
 }
 let winner
 
-const initialGameBoard = [
+let initialGameBoard = [
   [null, null, null],
   [null, null, null],
   [null, null, null,]
@@ -19,6 +20,7 @@ const initialGameBoard = [
 
 function App() {
   // const [activePlayer,setActivePlayer] = useState('X')
+  const [winPlayer,setWinPlayer] = useState({'X': "player 1",'O':"player 2"})
   const [gameTurns,setGameTurns] =useState([])
   const activePlayer = deriveActivePlayer(gameTurns)
   let gameBoard = initialGameBoard
@@ -35,8 +37,24 @@ function App() {
     if(firstSquareSymbol && firstSquareSymbol === secondSquareSymbol && firstSquareSymbol === thirdSquareSymbol)
     {winner=firstSquareSymbol}
   }
+  function onSelected (){
+    winner = null
+    initialGameBoard = [
+      [null, null, null],
+      [null, null, null],
+      [null, null, null,]
+    ]
+    setGameTurns([])
+  }
+  function changeName (symbol,name){
+    setWinPlayer(prev=>{
+      return {
+        ...prev,
+        [symbol] : name
+      }
+    })
 
-
+  }
 
   function handleSelectSquare(rowIndex,colIndex){
     // setActivePlayer((curActivePlayer)=> curActivePlayer==='X'? 'O' : 'X')
@@ -50,10 +68,10 @@ function App() {
     <main>
       <div id="game-container">
         <ol id="players" className="highlight-player">
-          <Player name="player1" symbol="X" isActive={activePlayer==='X'? "active" : ""} />
-          <Player name="player2" symbol="O" isActive={activePlayer==='O'? "active" : ""}/>
+          <Player checkname={changeName} name="player1" symbol="X" isActive={activePlayer==='X'? "active" : ""} />
+          <Player checkname={changeName} name="player2" symbol="O" isActive={activePlayer==='O'? "active" : ""}/>
         </ol>
-        {winner && <p>You won, {winner}</p>}
+        {winner && <GameOver winner={winner} onSelect={onSelected} endPlayer={winPlayer} />}
         <GameBoard  onSelectSquare={handleSelectSquare} board={gameBoard}/>
       </div>
       <Log turns={gameTurns}/>
