@@ -1,21 +1,48 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Places from './Places.jsx';
+import Error from './Error.jsx';
+import { sortPlacesByDistance } from '../loc.js';
+import { fetchAvailablePlaces } from '../http.js';
 
-const places = localStorage.getItem()
+// const places = localStorage.getItem()
 
 
 
 export default function AvailablePlaces({ onSelectPlace }) {
-  const [availablePlaces,setAvailablePlaces]=useState([])
-  fetch("http://localhost:3000/places").then((response)=>{
-    response.json()
-  } )
+  const [isFetching, setIsFetching] = useState(false)
+  const [availablePlaces, setAvailablePlaces] = useState([])
+  const [error, setError] = useState()
+  useEffect(() => {
+    setIsFetching(true)
+    async function fetchPlacer() {
+      try {
+        const places = await fetchAvailablePlaces()
+
+        navigator.geolocation.getCurrentPosition((postion) => {
+          const sortedPlaces = sortPlacesByDistance(places, postion.coords.latitude, postion.coords.longitude)
+          setAvailablePlaces(sortedPlaces)
+          setIsFetching(false)
+        })
+      } catch (error) {
+        setError({ message: error.message || "Could not fetch places" })
+        setIsFetching(false)
+      }
+      
+    }
+    fetchPlacer()
+  }, [])
+
+  if (error) {
+    return <Error title="An error occurred!" message={error.message} />
+  }
 
 
   return (
     <Places
       title="Available Places"
       places={availablePlaces}
+      isLoading={isFetching}
+      loadingText="Fetching place data..."
       fallbackText="No places available."
       onSelectPlace={onSelectPlace}
     />
