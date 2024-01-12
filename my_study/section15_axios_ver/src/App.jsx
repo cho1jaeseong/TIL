@@ -5,8 +5,7 @@ import Modal from './components/Modal.jsx';
 import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
 import AvailablePlaces from './components/AvailablePlaces.jsx';
-import { upDateUserPlaces, fetchUserPlaces } from './http.js';
-import Error from './components/Error.jsx';
+import { fetchUserPlaces, upDateUserPlaces } from './http.js';
 
 function App() {
   const selectedPlace = useRef();
@@ -16,10 +15,9 @@ function App() {
   const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState()
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-
-  useEffect(() => {
-    async function fetchPlaces() {
-
+  useEffect(()=>{
+    console.log(1)
+    async function fetchPlaces(){
       setIsFetching(true)
       try {
         const places = await fetchUserPlaces()
@@ -30,7 +28,7 @@ function App() {
       setIsFetching(false)
     }
     fetchPlaces()
-  }, [])
+  },[])
 
 
   function handleStartRemovePlace(place) {
@@ -74,15 +72,9 @@ function App() {
     setModalIsOpen(false);
   }, [userPlaces]);
 
-  function handleError() {
-    setErrorUpdatingPlaces(null)
-  }
   return (
     <>
-      <Modal open={errorUpdatingPlaces} onClose={handleError}>
-        {errorUpdatingPlaces && <Error title="An error occurred!" message={errorUpdatingPlaces.message} onConfirm={handleError} />}
-      </Modal>
-      <Modal open={modalIsOpen} onClose={handleStopRemovePlace} >
+      <Modal open={modalIsOpen} onClose={handleStopRemovePlace}>
         <DeleteConfirmation
           onCancel={handleStopRemovePlace}
           onConfirm={handleRemovePlace}
@@ -98,10 +90,7 @@ function App() {
         </p>
       </header>
       <main>
-        {error && <Error title="An error occurred!" message={error.messag2e} />}
         <Places
-          isLoading={isFetching}
-          loadingText="Fetching your places.."
           title="I'd like to visit ..."
           fallbackText="Select the places you would like to visit below."
           places={userPlaces}
