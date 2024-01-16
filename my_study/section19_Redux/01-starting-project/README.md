@@ -118,3 +118,39 @@ const counterSlice=createSlice({
   }
 
 ```
+
+
+## 간단한 toolkit 사용
+npm install @reduxjs/toolkit and redux 삭제하기
+1. 사용할.js 에  import { createSlice } from "@reduxjs/toolkit"
+2. counterSlice = createSlice({ 이름: , 초기값 , reducer: 사용할 함수들})  지정 (action의 매개변수는 .payload로 부를수 있음)
+const counterSlice=createSlice({
+    name:'counter',
+    initialState:initialCounterState,
+    reducers:{
+        increment(state){
+            state.counter++
+        },
+        increase(state,action){
+            state.counter=state.counter+action.payload
+        },
+    }
+    
+})
+3. counterSlice는 store에 등록 필요 ->export default counterSlice.reducer(export시키고 )
+4. store에 configureStore에 등록 해서 사용가능
+const store = configureStore({
+    reducer:{ counter:counterReducer, auth:authReducer}
+})
+5. 값이랑 함수 사용할곳에 연결하기
+  const dispatch = useDispatch()
+  useSelector(state=> state.[configureStore에 등록된 것(4. 에록된 변수명)].변수명)
+  const counter = useSelector(state=> state.counter.counter)
+  const show = useSelector(state=>state.counter.showCounter)
+  const toggleCounterHandler = () => {
+    dispatch(counterActions.toggleCounter())
+
+  };  
+
+6. slice는 action, reducer로 가능, reducer는 index.js에 등록을 해야함 (configureStore) 
+acion 은 dispatch를 통하여 함수를 부를수 있음
