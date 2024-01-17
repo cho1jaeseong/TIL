@@ -1,5 +1,5 @@
 import classes from './foodCard.module.css';
-export default function FoodCard({food}){
+export default function FoodCard({food,onClick}){
 
     return (<>
     <div className={classes.wrapper}>
@@ -7,7 +7,7 @@ export default function FoodCard({food}){
        <h3>{food.name}</h3>
        <h5>{food.price}</h5>
        <h5>{food.description}</h5>
-       <button>Add to Cart</button>
+       <button onClick={()=>onClick([food.name,food.price])}>Add to Cart</button>
     </div>
 
     </>)
