@@ -7,5 +7,4 @@ export async function fetchFood(){
         throw new Error("Failed to fetch food")
     }
     return response.data
-    
 }

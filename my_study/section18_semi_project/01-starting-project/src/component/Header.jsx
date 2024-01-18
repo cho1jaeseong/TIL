@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import classes from './Header.module.css';
 import { useState } from 'react';
 import Modal from './modal';
 export default function Header(){
@@ -15,14 +14,14 @@ export default function Header(){
     }
     return (<>
     {isModalOpen ? <Modal openModal={openModal} /> : null}
-    <div className={classes.boss}>
-    <div className={classes.logobox}  >
-        <div className= {classes.logo} >
-        <img src='./logo.jpg'/>
+    <div className='flex items-center justify-between' >
+    <div className='flex items-center p-16'  >
+        <div  className='px-8'>
+        <img className='w-24 rounded-full border-amber-400 border-4' src='./logo.jpg'/>
         </div>
-        <h2>REACTFOOD</h2>
+        <h2 className='text-amber-400'>REACTFOOD</h2>
     </div>
-    <div>
+    <div className='p-16'>
         <button onClick={openModal}>Cart ({cart.length})</button>
     </div>
     </div>

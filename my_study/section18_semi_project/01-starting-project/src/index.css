@@ -1,10 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&family=Lato:wght@400;700&display=swap');
 
+/* styles.css */
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* 여기에 사용자 정의 스타일을 추가할 수 있습니다. */
+
 * {
   box-sizing: border-box;
 }
 
+
 body {
+    
   margin: 0;
   font-family: 'Raleway', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -12,6 +22,11 @@ body {
   background: linear-gradient(#29251c, #2c2306);
   color: #d9e2f1;
   min-height: 100vh;
+
+  
+}
+::-webkit-scrollbar {
+    display: none;
 }
 
 #main-header {
@@ -68,6 +83,7 @@ h1 {
   text-align: center;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
+
 
 .meal-item article {
   height: 100%;

@@ -32,7 +32,8 @@ function App() {
   return (
     <>
       <Header />
-      <div className={classes.boss}>
+
+      <div className=" flex flex-wrap p-16">
       {foods.map((food, index) => (
         <FoodCard key={index} food={food} onClick={cartHandler} />
       ))}
