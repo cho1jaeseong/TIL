@@ -26,8 +26,8 @@ const YourComponent = () => {
                 </div>
                 <div className="col-md-10">
                     <div className='d-flex justify-content-around'>
-                        <div className='bg-white shadow'>
-                            <Status color="red" text="취소"/>
+                        <div className='bg-white shadow rounded-3 ' style={{minWidth:500}}>
+                            <Status />
                         </div>
                         <div>
                         <button type="button" className="btn btn-primary me-3">Primary</button>
