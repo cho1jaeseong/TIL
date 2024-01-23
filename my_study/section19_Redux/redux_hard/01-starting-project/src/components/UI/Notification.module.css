@@ -1,0 +1,30 @@
+/* Notification.module.css */
+.notification {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: #1a8ed1;
+  color: white;
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+  transform: translateX(0);
+  width: 200px; /* 알림 창의 기본 너비 */
+  height: 150px; /* 알림 창의 기본 높이 */
+  max-width: 80%; /* 최대 너비 설정 */
+}
+
+.notification.hidden {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.error {
+  background-color: #690000;
+}
+
+.success {
+  background-color: #1ad1b9;
+}

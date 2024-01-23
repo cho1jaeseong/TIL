@@ -1,0 +1,23 @@
+/* Modal.css */
+.modal-overlay {
+  position: fixed;
+  bottom: 50px; /* 수정: bottom 값을 조정하여 원하는 위치로 조절하세요 */
+  left: 50px;   /* 수정: left 값을 조정하여 원하는 위치로 조절하세요 */
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Adding a hover effect for a more interactive feel */
+.modal-overlay:hover {
+  background: rgba(0, 0, 0, 0.7);
+}

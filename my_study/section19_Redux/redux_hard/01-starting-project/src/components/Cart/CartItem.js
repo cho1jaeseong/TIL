@@ -16,7 +16,7 @@ const CartItem = (props) => {
   };
 
   return (
-    <motion.li  initial={{opacity:0,y:-20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-20}} className={classes.item}>
+    <motion.li  layout exit={{y:-30,opacity:0}}  initial={{opacity:0,y:-20}} animate={{opacity:1,y:0}} className={classes.item}>
       <header>
         <h3>{title}</h3>
         <div className={classes.price}>
