@@ -64,19 +64,23 @@ const ChatModal = () => {
     <AnimatePresence>
       <motion.div
         className={`${styles.chatModalContainer} ${styles.shadow} ${styles.chatModalContent} shadow-lg p-2 rounded-4`}
-
+        variants={{
+          visible:{transition:{staggerChildren :0.1 }}
+        }}
       >
         <div className={`${styles.chatModalHeader} d-flex`}>
           <h3>Chat</h3>
         </div>
-        <div>
           {DUMMY_DATA.map((data) => (
             <motion.div
               key={data.name}
               className={`${styles.chatListItem}`}
-              initial={{ opacity: 0 ,y:-10}}
-              animate={{ opacity: 1 ,y:0}}
-              exit={{ opacity: 0 ,y:-10 }}
+              variants={{
+                hidden:{opacity:0 ,y:30},
+                visible:{opacity:1,y:0}
+              }}
+              exit={{opacity:1,y:30}}
+              transition={{type:'tween'}}
             >
               <ChatModalList
                 name={data.name}
@@ -86,7 +90,6 @@ const ChatModal = () => {
               />
             </motion.div>
           ))}
-        </div>
       </motion.div>
     </AnimatePresence>
   );

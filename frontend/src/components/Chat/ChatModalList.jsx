@@ -2,15 +2,15 @@
 
 import React from 'react';
 import styles from './ChatModalList.module.css';
-
+import {motion} from "framer-motion"
 export default function ChatModalList({ name, chat, date, chatStatus }) {
   return (
     <>
-      <button className={styles['chat-button']}>
-        <div className='d-flex flex-row p-1 justify-content-between m-1'>
+      <motion.button className={styles['chat-button']}>
+        <div className='d-flex flex-row p-2 justify-content-between m-1'>
           <div className='d-flex gap-2'>
             <img
-              style={{ width: "3em", height: "3rem" }}
+              style={{ width: "3rem", height: "3rem" }}
               src='/randomimg.png'
               alt='랜덤 이미지'
             ></img>
@@ -26,7 +26,7 @@ export default function ChatModalList({ name, chat, date, chatStatus }) {
             ></span>
           </div>
         </div>
-      </button>
+      </motion.button>
     </>
   );
 }
