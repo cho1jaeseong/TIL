@@ -61,11 +61,14 @@ export default function RecommendMain() {
                 {visibleItems < DUMMY_DATA.length && (
                     <motion.button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-light d-flex justify-content-center align-items-center gap-2 shadow"
                     onClick={handleLoadMore}
                     whileHover={{ y: -5 }} // Adjust the value based on your preference
                   >
-                    더 보기
+                    <div className="d-flex align-items-center  justify-content-center rounded-circle bg-black text-white" style={{ width: "1rem", height: "1rem" }}>
+                  +
+                </div>
+                   <p className="m-0">더보기</p>
                   </motion.button>
                 )}
             </div>

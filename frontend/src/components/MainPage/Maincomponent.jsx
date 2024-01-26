@@ -2,13 +2,14 @@ import React from 'react';
 import Status from './status';
 import Requests from './Request';
 import { motion } from "framer-motion"
+import { Link } from 'react-router-dom';
 const DUMMY_DATA = {
 
 }
 
 
 
-const YourComponent = () => {
+const MainComponent = () => {
     const buttonVariants = {
         hover: {
             scale: 1.05,
@@ -17,6 +18,7 @@ const YourComponent = () => {
             },
         },
     };
+
     return (
         <motion.div style={{ margin: 20 }} initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -28,7 +30,7 @@ const YourComponent = () => {
                         {/* 좌측 컬럼 */}
                         <h3 className='mt-5'>OOO님</h3>
                         <h3>안녕하세요</h3>
-                        <div className='d-flex flex-column justify-content-center gap-5 h-100 w-100'>
+                        <div className='d-flex flex-column justify-content-center gap-5' style={{width: "11rem"}}>
                             <motion.button
                                 type="button"
                                 className="btn btn-primary btn-lg w-100 d-flex justify-content-center gap-4 align-items-center"
@@ -52,12 +54,14 @@ const YourComponent = () => {
                                 whileHover="hover"
                             >
                                 <img src='/truck 1.png' alt='' /><h5 className='m-0'>용달</h5>
+                                
                             </motion.button>
-                        </div>
-                        <motion.button type="button" className="btn btn-light btn-lg w-100" variants={buttonVariants}
+                            <motion.button type="button" className="btn btn-light btn-lg" s variants={buttonVariants}
                             whileHover="hover">
                             상담하기 <img src='/Wavy_Help.png' alt='' />
                         </motion.button>
+                        </div>
+                        
                     </div>
                     <div className="col-md-10 p-5 gap-4 d-flex flex-column">
                         <div className='d-flex justify-content-between mx-5' >
@@ -65,7 +69,7 @@ const YourComponent = () => {
                                 <Status />
                             </div>
                             <div className='d-flex gap-4'>
-                                <button type="button" class="btn btn-outline-primary rounded-5 shadow-5">용달 신청</button>
+                                <button type="button" class="btn btn-outline-primary rounded-5 shadow-5 " ><Link to="/requestdelivery">용달신청</Link></button>
                                 <button type="button" class="btn btn-outline-primary rounded-5 shadow-5">청소 신청</button>
                             </div>
                         </div>
@@ -87,4 +91,4 @@ const YourComponent = () => {
     );
 };
 
-export default YourComponent;
+export default MainComponent;

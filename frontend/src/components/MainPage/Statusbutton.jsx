@@ -1,5 +1,4 @@
 export default function StatusButton({ status }) {
-    console.log(status)
     let returnButton = null
     if (status === "신청중") {
         returnButton = <>

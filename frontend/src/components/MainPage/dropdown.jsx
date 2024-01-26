@@ -1,4 +1,4 @@
-import StatusButton from "./statusbutton"
+import StatusButton from "./Statusbutton"
 
 export default function DropDown({companyName,price,text,status}){
     const newprice = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
