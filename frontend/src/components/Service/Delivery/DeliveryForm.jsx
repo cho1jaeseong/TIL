@@ -8,6 +8,7 @@ import Car from "./Car";
 import { Link, useNavigate } from "react-router-dom";
 import CheckButton from "./Check_Button";
 import PhotoView from "./PhotoView";
+import ProgressBar from "./Progressbar";
 const DUMMY_DATA = [
   { name: "다마스", car_description: "어쩌구 저쩌구" },
   { name: "핸들이 고장난 8톤트럭", car_description: " 어쩌구 저쩌구어쩌구 저쩌구" },
@@ -29,9 +30,16 @@ export default function DeliveryForm() {
   const [whatRiding, setwhatRiding] = useState(null)
   const [isElavator, setisElavator] = useState(null)
   const [isCarStation, setisCarStation] = useState(null)
-  const [userinput, setuserinput] = useState(null)
+  const [userinput, setuserinput] = useState("")
   const [isActive, setIsActive] = useState("first")
-  const [isTime,setIsTime]=useState(null)
+  const [isTime, setIsTime] = useState("")
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  const [activeStep, setActiveStep] = useState(1);
+  const totalSteps = 3; // 전체 단계 수에 맞게 수정
+
+
+
   const hadleElavator = (event) => {
     setisElavator(event.target.innerText)
   }
@@ -56,18 +64,30 @@ export default function DeliveryForm() {
     setDropdownCarOpen((prev) => !prev);
   };
   const goToNextForm = () => {
+
     if (isActive === "first") { setIsActive("second") }
     else if (isActive === "second") { setIsActive("third") }
+    if (activeStep < totalSteps) {
+      setActiveStep(activeStep + 1);
+    }
   }
   const goTobeforeForm = () => {
     if (isActive === "second") { setIsActive("first") }
     else if (isActive === "third") { setIsActive("second") }
+    if (activeStep > 1) {
+      setActiveStep(activeStep - 1);
+    }
   }
   const handleUserInput = (event) => {
     setuserinput(event.target.value);
   };
   return (<>
+    <div style={{ position: 'absolute', width: '20%' ,  top: '15%',
+          left: '70%',}}>
+      <ProgressBar steps={totalSteps} activeStep={activeStep} />
+    </div>
     <AnimatePresence mode="wait">
+
       {isActive === "first" && <motion.div key="firstForm">
 
         <motion.div initial={{ opacity: 0.1 }} animate={{ opacity: 1 }} exit={{ opacity: 0.1 }} transition={{ duration: 0.3 }}  >
@@ -210,7 +230,7 @@ export default function DeliveryForm() {
 
         </motion.h5>
 
-        <h5 initial={{ opacity: 0.1 }} animate={{ opacity: 1 }} exit={{ opacity: 0.1 }} transition={{ duration: 0.3 }} onClick={goTobeforeForm} to="/dashboard" className="d-flex align-items-center gap-2" style={{
+        <motion.h5 initial={{ opacity: 0.1 }} animate={{ opacity: 1 }} exit={{ opacity: 0.1 }} transition={{ duration: 0.3 }} onClick={goTobeforeForm} to="/dashboard" className="d-flex align-items-center gap-2" style={{
           position: 'absolute',
           top: '10%',
           left: '10%',
@@ -225,7 +245,7 @@ export default function DeliveryForm() {
 
           />
           <motion.p className="m-0" style={{ color: "#006EEE" }}>이전으로</motion.p>
-        </h5>
+        </motion.h5>
         <motion.div className="col-12 d-flex justify-content-center " style={{ marginTop: "14rem" }} initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.3 }}  >
           <div className="col-8 d-flex gap-3 ">
             <div className="col-6 d-flex flex-column gap-4 p-3">
@@ -291,7 +311,7 @@ export default function DeliveryForm() {
               <div className="d-flex justify-content-center gap-2  text-center">
                 <p className="m-0 col-3 fw-bold">가구 사진</p>
                 <div className="col-9 d-flex">
-                  <PhotoView />
+                  <PhotoView selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
                 </div>
               </div>
               <div className="d-flex justify-content-center gap-2  text-center">
@@ -302,7 +322,7 @@ export default function DeliveryForm() {
                     value={userinput}
                     onChange={handleUserInput}
                     placeholder="여기에 추가사항을 입력하세요..."
-                    rows={3}  // 원하는 행 수로 조절
+                    rows={4}  // 원하는 행 수로 조절
                     style={{ width: "100%", resize: "none" }}
                   />
                 </div>
@@ -342,14 +362,99 @@ export default function DeliveryForm() {
           <motion.p className="m-0" style={{ color: "#006EEE" }}>이전으로</motion.p>
         </motion.h5>
 
-        <div className="col-12 d-flex justify-content-center align-items-center" style={{ marginTop: "15rem" }}>
-          <div className="col-6">
-            <div>
-              <p className="m-0 col-4">일시</p>
-              <p className="m-0 col-8">{isTime}</p>
+        <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ duration: 0.3 }}
+          className="col-12 d-flex justify-content-center align-items-center" style={{ marginTop: "11rem" }}>
+          <div className="col-5 p-3 d-flex flex-column ">
+            <div style={{ borderBottom: "solid 1px #006EEE" }} className="d-flex flex-column gap-2 p-3">
+              <div className="d-flex text-center">
+                <p className="m-0 col-4">일시</p>
+                <div className="col-8 d-flex  gap-3  justify-content-center">
+                  <p className="m-0">{isTime}</p>
+                  <p className="m-0">{isWhatTime}</p>
+                  <p className="m-0">{selectedOption}</p>
+                </div>
+              </div>
+
+              <div className="d-flex text-center">
+                <p className="m-0 col-4">출발</p>
+                <div className="col-8 d-flex  gap-3  justify-content-center">
+                  <p className="m-0">{isTime}</p>
+                </div>
+              </div>
+
+              <div className="d-flex text-center">
+                <p className="m-0 col-4">도착</p>
+                <div className="col-8 d-flex  gap-3  justify-content-center">
+                  <p className="m-0">{isTime}</p>
+                </div>
+              </div>
+
+              <div className="d-flex text-center">
+                <p className="m-0 col-4">차량</p>
+                <div className="col-8 d-flex  gap-3  justify-content-center">
+                  <p className="m-0">{isWhatCar}</p>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ borderBottom: "solid 1px #006EEE" }} className="d-flex flex-column gap-2 p-3">
+              <div className="d-flex text-center">
+                <p className="m-0 col-4">포장</p>
+                <div className="col-8 d-flex  gap-3  justify-content-center">
+                  <p className="m-0">{whatPacking}</p>
+                </div>
+              </div>
+
+              <div className="d-flex text-center">
+                <p className="m-0 col-4">탑승</p>
+                <div className="col-8 d-flex  gap-3  justify-content-center">
+                  <p className="m-0">{whatRiding}</p>
+                </div>
+              </div>
+
+              <div className="d-flex text-center">
+                <p className="m-0 col-4">엘레베이터</p>
+                <div className="col-8 d-flex  gap-3  justify-content-center">
+                  <p className="m-0">{isElavator}</p>
+                </div>
+              </div>
+
+              <div className="d-flex text-center">
+                <p className="m-0 col-4">주차장</p>
+                <div className="col-8 d-flex  gap-3  justify-content-center">
+                  <p className="m-0">{isCarStation}</p>
+                </div>
+              </div>
+
+              <div className="d-flex text-center">
+                <p className="m-0 col-4">가구사진</p>
+                <div className="col-8 d-flex  gap-3  justify-content-center shadow " style={{ overflowX: "auto" }}>
+                  {selectedFiles.map((file, index) => (
+                    <div key={index} className="d-flex flex-column justify-content-center align-items-center">
+                      <img
+                        src={file.previewURL}
+                        alt={`선택된 파일 ${index + 1} 미리보기`}
+                        style={{ width: "7rem", height: "7rem" }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="d-flex text-center ">
+                <p className="m-0 col-4">추가사항</p>
+                <div className="col-8 d-flex  gap-3  justify-content-center">
+                  {userinput}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+
+
+
+
+
+        </motion.div>
       </div>
       }
 

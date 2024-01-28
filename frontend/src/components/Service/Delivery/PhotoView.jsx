@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import "./PhotoView.css";
-const PhotoView = () => {
-  const [selectedFiles, setSelectedFiles] = useState([]);
+const PhotoView = ({selectedFiles,setSelectedFiles}) => {
+  
 
   const handleFileChange = (event) => {
     const files = event.target.files;

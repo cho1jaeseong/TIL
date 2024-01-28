@@ -23,7 +23,7 @@ const Calendar = ({ setStartDate, startDate, isTime, setIsTime }) => {
     const timeIncluded = date && date.getHours() > 0;
 
     // Update the isTime state
-    setIsTime(timeIncluded);
+    setIsTime(`${date.getFullYear()}년 ${date.getMonth()+1}월 ${date.getDate()}일`)
   };
 
   return (
