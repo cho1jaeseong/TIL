@@ -34,7 +34,7 @@ export default function DeliveryForm() {
   const [isActive, setIsActive] = useState("first")
   const [isTime, setIsTime] = useState("")
   const [selectedFiles, setSelectedFiles] = useState([]);
-
+  const navigate=useNavigate()
   const [activeStep, setActiveStep] = useState(1);
   const totalSteps = 3; // 전체 단계 수에 맞게 수정
 
@@ -70,6 +70,9 @@ export default function DeliveryForm() {
     if (activeStep < totalSteps) {
       setActiveStep(activeStep + 1);
     }
+  }
+  const hadlesubmit =()=>{
+    navigate('/recommend')
   }
   const goTobeforeForm = () => {
     if (isActive === "second") { setIsActive("first") }
@@ -448,16 +451,17 @@ export default function DeliveryForm() {
                 </div>
               </div>
             </div>
+            <button onClick={hadlesubmit} className="mt-3 btn btn-primary">제출</button>
           </div>
 
-
+          
 
 
 
         </motion.div>
       </div>
       }
-
+ 
     </AnimatePresence>
 
 

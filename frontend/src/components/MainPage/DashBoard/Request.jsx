@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import DropDown from './dropdown';
 import { AnimatePresence, motion } from "framer-motion";
-import StatusChange from './status_Change';
+import StatusChange from './Status_Change';
 
 const DIMMY_DATA = [
     {

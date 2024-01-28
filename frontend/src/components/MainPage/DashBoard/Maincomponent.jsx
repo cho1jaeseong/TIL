@@ -1,8 +1,9 @@
 import React from 'react';
-import Status from './status';
+
 import Requests from './Request';
 import { motion } from "framer-motion"
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Status from './Status';
 const DUMMY_DATA = {
 
 }
@@ -18,15 +19,21 @@ const MainComponent = () => {
             },
         },
     };
-
+    const navigate =useNavigate()
+    const hadleDelivery =()=>{
+        navigate('/requestdelivery');
+    }
+    const hadleCleaning =()=>{
+        navigate('/requestcleaning');
+    }
     return (
-        <motion.div style={{ margin: 20 }} initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{opacity: 0, y: 20 }}
+        <motion.div style={{ margin: 20 }} initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{opacity: 0 }}
             transition={{ duration: 0.5 }}>
             <div className="container-fluid px-3" >
                 <div className="row my-5 " style={{ height: '40rem' }}>
-                    <div className="col-md-2 p-3 d-flex flex-column align-items-center justify-content-around text-center border-dark-subtle border-end">
+                    <div className="col-2 p-3 d-flex flex-column align-items-center justify-content-around text-center border-dark-subtle border-end" >
                         {/* 좌측 컬럼 */}
                         <h3 className='mt-5'>OOO님</h3>
                         <h3>안녕하세요</h3>
@@ -69,8 +76,8 @@ const MainComponent = () => {
                                 <Status />
                             </div>
                             <div className='d-flex gap-4'>
-                                <button type="button" class="btn btn-outline-primary rounded-5 shadow-5 " ><Link to="/requestdelivery">용달신청</Link></button>
-                                <button type="button" class="btn btn-outline-primary rounded-5 shadow-5">청소 신청</button>
+                                <button onClick={hadleDelivery} type="button" class="btn btn-outline-primary rounded-5 shadow-5 " >용달 청소</button>
+                                <button onClick={hadleCleaning} type="button" class="btn btn-outline-primary rounded-5 shadow-5">청소 신청</button>
                             </div>
                         </div>
                         <div className=' rounded-3 mx-5 p-2 d-flex justify-content-around align-items-center text-center' style={{ background: "#D9E4FF" }}>
