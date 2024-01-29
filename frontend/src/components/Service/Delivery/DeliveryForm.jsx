@@ -8,7 +8,7 @@ import Car from "./Car";
 import { Link, useNavigate } from "react-router-dom";
 import CheckButton from "./Check_Button";
 import PhotoView from "./PhotoView";
-import ProgressBar from "./Progressbar";
+import ProgressBar from "./Progressbar"; // 대소문자 이슈
 const DUMMY_DATA = [
   { name: "다마스", car_description: "어쩌구 저쩌구" },
   { name: "핸들이 고장난 8톤트럭", car_description: " 어쩌구 저쩌구어쩌구 저쩌구" },
@@ -34,7 +34,7 @@ export default function DeliveryForm() {
   const [isActive, setIsActive] = useState("first")
   const [isTime, setIsTime] = useState("")
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const navigate=useNavigate()
+  const navigate = useNavigate()
   const [activeStep, setActiveStep] = useState(1);
   const totalSteps = 3; // 전체 단계 수에 맞게 수정
 
@@ -71,7 +71,7 @@ export default function DeliveryForm() {
       setActiveStep(activeStep + 1);
     }
   }
-  const hadlesubmit =()=>{
+  const hadlesubmit = () => {
     navigate('/recommend')
   }
   const goTobeforeForm = () => {
@@ -85,8 +85,10 @@ export default function DeliveryForm() {
     setuserinput(event.target.value);
   };
   return (<>
-    <div style={{ position: 'absolute', width: '20%' ,  top: '15%',
-          left: '70%',}}>
+    <div style={{
+      position: 'absolute', width: '20%', top: '15%',
+      left: '70%',
+    }}>
       <ProgressBar steps={totalSteps} activeStep={activeStep} />
     </div>
     <AnimatePresence mode="wait">
@@ -454,14 +456,14 @@ export default function DeliveryForm() {
             <button onClick={hadlesubmit} className="mt-3 btn btn-primary">제출</button>
           </div>
 
-          
+
 
 
 
         </motion.div>
       </div>
       }
- 
+
     </AnimatePresence>
 
 
