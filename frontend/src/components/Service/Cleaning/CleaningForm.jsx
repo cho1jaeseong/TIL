@@ -11,13 +11,7 @@ import ProgressBar from "./Progressbar"; // 대소문자 이슈
 
 import Address from "./Address";
 import Map from "./Map";
-const DUMMY_DATA = [
-  { name: "다마스", car_description: "어쩌구 저쩌구" },
-  { name: "핸들이 고장난 8톤트럭", car_description: " 어쩌구 저쩌구어쩌구 저쩌구" },
-  { name: "1톤트럭", car_description: " 어쩌구 저쩌구어쩌구 저쩌구어쩌구 저쩌구" },
-  { name: "1톤 리프트트럭", car_description: " 어쩌구 저쩌구어쩌구 저쩌구어쩌구 저쩌구어쩌구 저쩌구" },
-  { name: "1톤 냉장/냉동 탑차", car_description: " 어쩌구 저쩌구어쩌구 저쩌구어쩌구 저쩌구어쩌구 저쩌구어쩌구 저쩌구" },
-]
+
 
 
 
@@ -44,9 +38,13 @@ export default function CleaningFrom() {
 
   const [whereStart, setwhereStart] = useState({})
   const [whereEnd, setwhereEnd] = useState({})
-
-  const [carDistance, setCarDistance] = useState(null)
-  const [carTime, setCarTime] = useState(null)
+  const [isBalkoni, setIsBalkoni] = useState(null)
+  const [isBok, setIsBok] = useState(null)
+  const [detailAddress, setDetailAddress] = useState("")
+  const [ispyung, setIsPyung] = useState("m^2")
+  const [whatHouse, setWhatHouse] = useState(null)
+  const [roomCounts, setRoomCounts] = useState(null)
+  const [windowCounts, setWindowCounts] = useState(null)
   const hadleElavator = (event) => {
     setisElavator(event.target.innerText)
   }
@@ -70,6 +68,7 @@ export default function CleaningFrom() {
   const toggleCarDropdown = () => {
     setDropdownCarOpen((prev) => !prev);
   };
+
   const goToNextForm = () => {
 
     if (isActive === "first") { setIsActive("second") }
@@ -95,6 +94,11 @@ export default function CleaningFrom() {
     setWhatModal(event)
     setIsModalOpen(true)
   }
+  const handleIsPyung = () => {
+    if (ispyung === "m^2") { setIsPyung("평") }
+    else { setIsPyung("m^2") }
+  }
+
   return (<>
     <div style={{
       position: 'absolute', width: '20%', top: '15%',
@@ -171,7 +175,7 @@ export default function CleaningFrom() {
 
           </motion.div>
           <div className="col-12 d-flex flex-column justify-content-center align-items-center">
-            <div className="col-6 gap-5 d-flex flex-column" style={{ marginTop: "15rem", }}>
+            <div className="col-6 gap-5 d-flex flex-column" style={{ marginTop: "20rem", }}>
 
               <div className="mb-3 d-flex align-items-center ">
                 <div className="col-3">
@@ -224,7 +228,7 @@ export default function CleaningFrom() {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                    <h3 className="m-0">시에</h3>
+                    <h3 className="m-0">시에 청소가 필요해요! </h3>
                   </div>
                 </div>
               </div>
@@ -262,88 +266,88 @@ export default function CleaningFrom() {
         </motion.h5>
         <motion.div className="col-12 d-flex justify-content-center " style={{ marginTop: "14rem" }} initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.3 }}  >
           <div className="col-8 d-flex gap-3 ">
-            <div className="col-6 d-flex flex-column gap-4 p-3">
-              <div className="d-flex justify-content-center gap-1 align-items-center text-center" style={{ width: "100%", height: "2rem" }}>
-                <div className="col-1 fw-bold">출발 : </div>
-                <div className="col-9 shadow rounded-4 fw-bold d-flex justify-content-center align-items-center" style={{ height: "100%" }} ><p placeholder="adsf" className="m-0"> {whereStart.address ? (
+            <div className="col-6 d-flex flex-column gap-5 p-3 justify-content-center align-items-center">
+              <div className="d-flex  gap-1 align-items-center " style={{ width: "100%", height: "2rem" }}>
+                <div className="col-2 fw-bold">집주소 : </div>
+                <div className="col-8 shadow rounded-4 fw-bold d-flex justify-content-center align-items-center" style={{ height: "100%" }} ><p className="m-0"> {whereStart.address ? (
                   <p className="m-0">{whereStart.address}</p>
                 ) : (
-                  <p className="m-0 text-muted">출발지를 입력해주세요.</p>
+                  <p className="m-0 text-muted">주소를 입력해주세요!</p>
                 )}</p></div>
-                <button onClick={() => hadleModal("start")} className="btn-primary btn col-2 d-flex justify-content-center align-items-center" style={{ height: "100%" }}><p className="m-0">찾기</p></button>
+                <button onClick={() => hadleModal("start")} className="btn-primary btn col-2 d-flex justify-content-center align-items-center" style={{ height: "2rem" }}><p className="m-0">찾기</p></button>
               </div>
-              <div className="d-flex justify-content-center gap-1 align-items-center text-center" style={{ width: "100%", height: "2rem" }}>
-                <div className="col-1 fw-bold">도착 : </div>
-                <div className="col-9 shadow rounded-4 fw-bold d-flex justify-content-center align-items-center" style={{ height: "100%" }}>
-                  {whereEnd.address ? (
-                    <p className="m-0">{whereEnd.address}</p>
-                  ) : (
-                    <p className="m-0 text-muted">도착지를 입력해주세요.</p>
-                  )}
+
+              <div className="col-9 d-flex " style={{ width: "100%" }} >
+                <div className="col-2 fw-bold">상세주소 : </div>
+                <input style={{ border: "none" }} className="col-10 shadow fw-bold text-center rounded-4 " placeholder="상세주소를 입력해주세요!" type="text" onChange={(event) => setDetailAddress(event.target.value)} value={detailAddress}></input>
+              </div>
+
+              <div className="col-9 d-flex " style={{ width: "100%" }} >
+                <div className="col-2 fw-bold">집크기 : </div>
+                <div className="col-12 d-flex gap-2 " >
+                  <input style={{ border: "none" }} className="col-8 shadow fw-bold text-center rounded-4 " placeholder="집크기를 입력해주세요!" type="number" onChange={(event) => setWhatHouse(event.target.value)} value={whatHouse}></input>
+                  <button style={{ height: "2rem" }} onClick={handleIsPyung} className="btn-primary btn col-2 d-flex justify-content-center align-items-center" ><p className="m-0">{ispyung}</p></button>
                 </div>
-                <button onClick={() => hadleModal("end")} className="btn-primary btn col-2 d-flex justify-content-center align-items-center" style={{ height: "100%" }}><p className="m-0">찾기</p></button>
               </div>
-              <AnimatePresence>
-              {carDistance && carTime && <div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="d-flex gap-3">
-                <p className="m-0">거리:{carDistance}</p>
-                <p className="m-0">시간:{carTime}</p>
-              </div>}
-              </AnimatePresence>
+              <div className="d-flex col-12 ">
+                <div className=" d-flex col-6 gap-1 align-items-center"  >
+                  <div className=" col-4 fw-bold">방개수 : </div>
+                  <input style={{ border: "none",height:"2rem" }} className="col-6 shadow fw-bold text-center rounded-4 " placeholder="방개수" type="number" onChange={(event) => setRoomCounts(event.target.value)} value={roomCounts}></input>
+                  <div className="d-flex  align-items-center fw-bold">개</div>
+                </div>
 
-              <div style={{ height: "100%", width: "100%", border: "solid 1px #006EEE" }} className=" p-3 shadow rounded-5">{whereEnd.address && whereStart.address && <Map key={`${whereStart.lat}-${whereStart.lon}-${whereEnd.lat}-${whereEnd.lon}`} start_lat={whereStart.lat} start_lon={whereStart.lon} end_lat={whereEnd.lat} end_lon={whereEnd.lon} setCarDistance={setCarDistance} setCarTime={setCarTime} />}</div>
-              <div>
-
+                <div className="d-flex col-6 gap-1 align-items-center"  >
+                  <div className="col-4 fw-bold">창개수 : </div>
+                  <input style={{ border: "none",height:"2rem" }} className="col-6 shadow fw-bold text-center rounded-4 " placeholder="창개수" type="number" onChange={(event) => setWindowCounts(event.target.value)} value={windowCounts}></input>
+                 <div className="d-flex  align-items-center fw-bold">개</div>
+                </div>
               </div>
             </div>
 
             <div className="col-6 p-3 gap-4 d-flex flex-column" >
               <div className="d-flex justify-content-center gap-2 align-items-center text-center">
-                <p className="m-0 col-3 fw-bold">포장여부</p>
+                <p className="m-0 col-3 fw-bold">발코니/베란다</p>
                 <div className="col-3">
-                  <CheckButton checkPacking={checkPacking} isActive={whatPacking === "포장"} name="포장" />
+                  <CheckButton checkPacking={() => setIsBalkoni("있음")} isActive={isBalkoni === "있음"} name="있음" />
                 </div>
                 <div className="col-3">
-                  <CheckButton className="col-3" checkPacking={checkPacking} isActive={whatPacking === "미포장"} name="미포장" />
-                </div>
-                <div className="col-3">
-                  <CheckButton className="col-3" checkPacking={checkPacking} isActive={whatPacking === "반포장"} name="반포장" />
-                </div>
-              </div>
-
-              <div className="d-flex justify-content-center gap-2 align-items-center text-center">
-                <p className="m-0 col-3 fw-bold">탑승여부</p>
-                <div className="col-3">
-                  <CheckButton checkPacking={checkRiding} isActive={whatRiding === "탑승"} name="탑승" />
-                </div>
-                <div className="col-3">
-                  <CheckButton checkPacking={checkRiding} isActive={whatRiding === "미탑승"} name="미탑승" />
+                  <CheckButton checkPacking={() => setIsBalkoni("없음")} isActive={isBalkoni === "없음"} name="없음" />
                 </div>
                 <div className="col-3"></div>
               </div>
 
               <div className="d-flex justify-content-center gap-2 align-items-center text-center">
-                <p className="m-0 col-3 fw-bold">엘레베이터</p>
+                <p className="m-0 col-3 fw-bold">복층인가요?</p>
                 <div className="col-3">
-                  <CheckButton checkPacking={hadleElavator} isActive={isElavator === "있음"} name="있음" />
+                  <CheckButton checkPacking={() => setIsBok("네")} isActive={isBok === "네"} name="네" />
                 </div>
                 <div className="col-3">
-                  <CheckButton checkPacking={hadleElavator} isActive={isElavator === "없음"} name="없음" />
+                  <CheckButton checkPacking={() => setIsBok("아니요")} isActive={isBok === "아니요"} name="아니요" />
                 </div>
                 <div className="col-3"></div>
               </div>
 
-              <div className="d-flex justify-content-center gap-2 align-items-center text-center">
-                <p className="m-0 col-3 fw-bold">주차장</p>
-                <div className="col-3">
-                  <CheckButton checkPacking={hadleCarStation} isActive={isCarStation === "있음"} name="있음" />
+              <div className="d-flex flex-column  gap-2">
+                <p style={{ width: "100%" }} className="m-0 col-3 fw-bold ">필요 추가 서비스를 선택해 주세요</p>
+                <div className="d-flex gap-3 align-items-center">
+                  <div className="col" >
+                    <CheckButton checkPacking={hadleElavator} isActive={isElavator === "있음"} name="곰팡이 청소" />
+                  </div>
+                  <div className="col">
+                    <CheckButton checkPacking={hadleElavator} isActive={isElavator === "없음"} name="외부 유리창 청소" />
+                  </div>
+                  <div className="col" >
+                    <CheckButton checkPacking={hadleElavator} isActive={isElavator === "없음"} name="세집 증후군 제거" />
+                  </div>
+                  <div className="col">
+                    <CheckButton checkPacking={hadleElavator} isActive={isElavator === "없음"} name="스티커&스트지 제거" />
+                  </div>
                 </div>
-                <div className="col-3">
-                  <CheckButton checkPacking={hadleCarStation} isActive={isCarStation === "없음"} name="없음" />
-                </div>
-                <div className="col-3"></div>
+
               </div>
+
               <div className="d-flex justify-content-center gap-2  text-center">
-                <p className="m-0 col-3 fw-bold">가구 사진</p>
+                <p className="m-0 col-3 fw-bold">참고 사진</p>
                 <div className="col-9 d-flex">
                   <PhotoView selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
                 </div>
