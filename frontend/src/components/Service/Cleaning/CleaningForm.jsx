@@ -4,12 +4,11 @@ import ReactDatePicker from "react-datepicker";
 import Calendar from "./Calendar";
 import "react-datepicker/dist/react-datepicker.css";
 import Clock from "./Clock";
-import Car from "./Car";
 import { Link, useNavigate } from "react-router-dom";
 import CheckButton from "./Check_Button";
 import PhotoView from "./PhotoView";
 import ProgressBar from "./Progressbar"; // 대소문자 이슈
-import "./DeliveryForm.css"
+
 import Address from "./Address";
 import Map from "./Map";
 const DUMMY_DATA = [
@@ -22,7 +21,7 @@ const DUMMY_DATA = [
 
 
 
-export default function DeliveryForm() {
+export default function CleaningFrom() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [isDropdownClockOpen, setDropdownClockOpen] = useState(false);
@@ -227,36 +226,6 @@ export default function DeliveryForm() {
                     </AnimatePresence>
                     <h3 className="m-0">시에</h3>
                   </div>
-                </div>
-              </div>
-
-              <div>
-                <div style={{ position: "relative" }} className="d-flex align-items-center gap-4">
-                  <motion.button
-                    className="btn btn-primary rounded-5 d-flex justify-content-center align-items-center  p-2"
-                    style={{ width: "10rem", height: "4rem" }}
-                    onClick={toggleCarDropdown}
-                  >
-                    <p className="m-0 col-10">{isWhatCar || "차량선택"}</p>
-                    <motion.img
-                      className="col-2"
-                      src='/caret-down-fill.png'
-                      style={{ width: "1rem", height: "1rem" }}
-                      animate={{ rotate: isDropdownCarOpen ? 180 : 0 }}
-                      transition={{ duration: 0.3 }} // Adjust the duration as needed
-                    />
-
-                  </motion.button>
-
-                  <h3 className="m-0"> 가 필요해요</h3>
-                  <AnimatePresence>
-                    {isDropdownCarOpen && (
-                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="mt-2" style={{ position: "absolute", top: "100%", left: 0, zIndex: 1 }}>
-                        <Car data={DUMMY_DATA} setisWhatCar={setisWhatCar} toggleCarDropdown={toggleCarDropdown} />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </div>
               </div>
             </div>
