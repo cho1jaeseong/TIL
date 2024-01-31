@@ -10,7 +10,9 @@ import PhotoView from "./PhotoView";
 import ProgressBar from "./Progressbar"; // 대소문자 이슈
 
 import Address from "./Address";
-import Map from "./Map";
+import AddButton from "./AddButton";
+import { faL } from "@fortawesome/free-solid-svg-icons";
+
 
 
 
@@ -19,13 +21,8 @@ export default function CleaningFrom() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [isDropdownClockOpen, setDropdownClockOpen] = useState(false);
-  const [isDropdownCarOpen, setDropdownCarOpen] = useState(false)
   const [isWhatTime, setisWhatTime] = useState()
-  const [isWhatCar, setisWhatCar] = useState()
-  const [whatPacking, setwhatPacking] = useState(null)
-  const [whatRiding, setwhatRiding] = useState(null)
-  const [isElavator, setisElavator] = useState(null)
-  const [isCarStation, setisCarStation] = useState(null)
+
   const [userinput, setuserinput] = useState("")
   const [isActive, setIsActive] = useState("first")
   const [isTime, setIsTime] = useState("")
@@ -35,7 +32,7 @@ export default function CleaningFrom() {
   const totalSteps = 3; // 전체 단계 수에 맞게 수정
   const [whatModal, setWhatModal] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const [option, setOption] = useState({ isGom: false, isOutsideWindow: false, isNewHous: false, isSticker: false })
   const [whereStart, setwhereStart] = useState({})
   const [whereEnd, setwhereEnd] = useState({})
   const [isBalkoni, setIsBalkoni] = useState(null)
@@ -43,31 +40,19 @@ export default function CleaningFrom() {
   const [detailAddress, setDetailAddress] = useState("")
   const [ispyung, setIsPyung] = useState("m^2")
   const [whatHouse, setWhatHouse] = useState(null)
-  const [roomCounts, setRoomCounts] = useState(null)
-  const [windowCounts, setWindowCounts] = useState(null)
-  const hadleElavator = (event) => {
-    setisElavator(event.target.innerText)
-  }
-  const hadleCarStation = (event) => {
-    setisCarStation(event.target.innerText)
-  }
+  const [roomCounts, setRoomCounts] = useState("")
+  const [windowCounts, setWindowCounts] = useState("")
 
-  const checkRiding = (event) => {
-    setwhatRiding(event.target.innerText)
-  }
+
   const handleOptionChange = (value) => {
     setSelectedOption(value);
   };
 
-  const checkPacking = (event) => {
-    setwhatPacking(event.target.innerText)
-  }
+
   const toggleClockDropdown = () => {
     setDropdownClockOpen((prev) => !prev);
   };
-  const toggleCarDropdown = () => {
-    setDropdownCarOpen((prev) => !prev);
-  };
+
 
   const goToNextForm = () => {
 
@@ -80,6 +65,7 @@ export default function CleaningFrom() {
   const hadlesubmit = () => {
     navigate('/recommend')
   }
+
   const goTobeforeForm = () => {
     if (isActive === "second") { setIsActive("first") }
     else if (isActive === "third") { setIsActive("second") }
@@ -98,6 +84,27 @@ export default function CleaningFrom() {
     if (ispyung === "m^2") { setIsPyung("평") }
     else { setIsPyung("m^2") }
   }
+  const getServiceNameByKey = (key) => {
+    const serviceNameMap = {
+      isGom: '곰팡이 청소',
+      isOutsideWindow: '외부 유리창 청소',
+      isNewHous: '세집 증후군 제거',
+      isSticker: '스티커&스트지 제거',
+      // 다른 서비스에 대한 이름 매핑 추가
+    };
+
+    return serviceNameMap[key] || key; // key에 해당하는 값이 없을 경우 key 그대로 반환
+  };
+  const handleAddButtonClick = (buttonName) => {
+    // Copy the current state
+    const updatedOption = { ...option };
+
+    // Toggle the value for the clicked button
+    updatedOption[buttonName] = !updatedOption[buttonName];
+
+    // Update the state with the new values
+    setOption(updatedOption);
+  };
 
   return (<>
     <div style={{
@@ -269,43 +276,44 @@ export default function CleaningFrom() {
             <div className="col-6 d-flex flex-column gap-5 p-3 justify-content-center align-items-center">
               <div className="d-flex  gap-1 align-items-center " style={{ width: "100%", height: "2rem" }}>
                 <div className="col-2 fw-bold">집주소 : </div>
-                <div className="col-8 shadow rounded-4 fw-bold d-flex justify-content-center align-items-center" style={{ height: "100%" }} ><p className="m-0"> {whereStart.address ? (
+                <div className="col-8 shadow rounded-4 fw-bold d-flex justify-content-center align-items-center" style={{ height: "100%" }} >{whereStart.address ? (
                   <p className="m-0">{whereStart.address}</p>
                 ) : (
                   <p className="m-0 text-muted">주소를 입력해주세요!</p>
-                )}</p></div>
+                )}</div>
                 <button onClick={() => hadleModal("start")} className="btn-primary btn col-2 d-flex justify-content-center align-items-center" style={{ height: "2rem" }}><p className="m-0">찾기</p></button>
               </div>
 
               <div className="col-9 d-flex " style={{ width: "100%" }} >
                 <div className="col-2 fw-bold">상세주소 : </div>
-                <input style={{ border: "none" }} className="col-10 shadow fw-bold text-center rounded-4 " placeholder="상세주소를 입력해주세요!" type="text" onChange={(event) => setDetailAddress(event.target.value)} value={detailAddress}></input>
+                <input style={{ border: "none" }} className="col-10 shadow fw-bold text-center rounded-4 " placeholder="상세주소를 입력해주세요!" type="text" onChange={(event) => setDetailAddress(event.target.value)} ></input>
               </div>
 
               <div className="col-9 d-flex " style={{ width: "100%" }} >
                 <div className="col-2 fw-bold">집크기 : </div>
                 <div className="col-12 d-flex gap-2 " >
-                  <input style={{ border: "none" }} className="col-8 shadow fw-bold text-center rounded-4 " placeholder="집크기를 입력해주세요!" type="number" onChange={(event) => setWhatHouse(event.target.value)} value={whatHouse}></input>
+                  <input style={{ border: "none" }} className="col-8 shadow fw-bold text-center rounded-4 " placeholder="집크기를 입력해주세요!" type="number" onChange={(event) => setWhatHouse(event.target.value)} ></input>
                   <button style={{ height: "2rem" }} onClick={handleIsPyung} className="btn-primary btn col-2 d-flex justify-content-center align-items-center" ><p className="m-0">{ispyung}</p></button>
                 </div>
               </div>
-              <div className="d-flex col-12 ">
+              <div className="d-flex col-12  gap-4">
                 <div className=" d-flex col-6 gap-1 align-items-center"  >
                   <div className=" col-4 fw-bold">방개수 : </div>
-                  <input style={{ border: "none",height:"2rem" }} className="col-6 shadow fw-bold text-center rounded-4 " placeholder="방개수" type="number" onChange={(event) => setRoomCounts(event.target.value)} value={roomCounts}></input>
+                  <input style={{ border: "none", height: "2rem" }} className="col-6 shadow fw-bold text-center rounded-4 " placeholder="방개수" type="number" onChange={(event) => setRoomCounts(event.target.value)}
+
+
+                  ></input>
                   <div className="d-flex  align-items-center fw-bold">개</div>
                 </div>
 
                 <div className="d-flex col-6 gap-1 align-items-center"  >
                   <div className="col-4 fw-bold">창개수 : </div>
-                  <input style={{ border: "none",height:"2rem" }} className="col-6 shadow fw-bold text-center rounded-4 " placeholder="창개수" type="number" onChange={(event) => setWindowCounts(event.target.value)} value={windowCounts}></input>
-                 <div className="d-flex  align-items-center fw-bold">개</div>
+                  <input style={{ border: "none", height: "2rem" }} className="col-6 shadow fw-bold text-center rounded-4 " placeholder="창개수" type="number" onChange={(event) => setWindowCounts(event.target.value)} ></input>
+                  <div className="d-flex  align-items-center fw-bold ">개</div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-6 p-3 gap-4 d-flex flex-column" >
-              <div className="d-flex justify-content-center gap-2 align-items-center text-center">
+              <div className="d-flex justify-content-center gap-3 align-items-center  col-12">
                 <p className="m-0 col-3 fw-bold">발코니/베란다</p>
                 <div className="col-3">
                   <CheckButton checkPacking={() => setIsBalkoni("있음")} isActive={isBalkoni === "있음"} name="있음" />
@@ -316,7 +324,7 @@ export default function CleaningFrom() {
                 <div className="col-3"></div>
               </div>
 
-              <div className="d-flex justify-content-center gap-2 align-items-center text-center">
+              <div className="d-flex justify-content-center gap-3 align-items-center col-12">
                 <p className="m-0 col-3 fw-bold">복층인가요?</p>
                 <div className="col-3">
                   <CheckButton checkPacking={() => setIsBok("네")} isActive={isBok === "네"} name="네" />
@@ -327,20 +335,27 @@ export default function CleaningFrom() {
                 <div className="col-3"></div>
               </div>
 
+            </div>
+
+            <div className="col-6 p-3 gap-4 d-flex flex-column" >
+
+
+
+
               <div className="d-flex flex-column  gap-2">
                 <p style={{ width: "100%" }} className="m-0 col-3 fw-bold ">필요 추가 서비스를 선택해 주세요</p>
                 <div className="d-flex gap-3 align-items-center">
                   <div className="col" >
-                    <CheckButton checkPacking={hadleElavator} isActive={isElavator === "있음"} name="곰팡이 청소" />
+                    <AddButton value="isGom" handleAddButtonClick={handleAddButtonClick} isActive={option.isGom} name="곰팡이 청소" />
                   </div>
                   <div className="col">
-                    <CheckButton checkPacking={hadleElavator} isActive={isElavator === "없음"} name="외부 유리창 청소" />
+                    <AddButton value="isOutsideWindow" handleAddButtonClick={handleAddButtonClick} isActive={option.isOutsideWindow} name="외부 유리창 청소" />
                   </div>
                   <div className="col" >
-                    <CheckButton checkPacking={hadleElavator} isActive={isElavator === "없음"} name="세집 증후군 제거" />
+                    <AddButton value="isNewHous" handleAddButtonClick={handleAddButtonClick} isActive={option.isNewHous} name="세집 증후군 제거" />
                   </div>
                   <div className="col">
-                    <CheckButton checkPacking={hadleElavator} isActive={isElavator === "없음"} name="스티커&스트지 제거" />
+                    <AddButton value="isSticker" handleAddButtonClick={handleAddButtonClick} isActive={option.isSticker} name="스티커&스트지 제거" />
                   </div>
                 </div>
 
@@ -403,7 +418,7 @@ export default function CleaningFrom() {
         <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ duration: 0.3 }}
           className="col-12 d-flex justify-content-center align-items-center" style={{ marginTop: "11rem" }}>
           <div className="col-5 p-3 d-flex flex-column ">
-            <div style={{ borderBottom: "solid 1px #006EEE" }} className="d-flex flex-column gap-2 p-3">
+            <div style={{ borderBottom: "solid 1px #006EEE" }} className="d-flex flex-column gap-3 p-3">
               <div className="d-flex text-center">
                 <p className="m-0 col-4">일시</p>
                 <div className="col-8 d-flex  gap-3  justify-content-center">
@@ -414,55 +429,66 @@ export default function CleaningFrom() {
               </div>
 
               <div className="d-flex text-center">
-                <p className="m-0 col-4">출발</p>
+                <p className="m-0 col-4">위치</p>
                 <div className="col-8 d-flex  gap-3  justify-content-center">
                   <p className="m-0">{whereStart.address}</p>
+                  <p className="m-0">{detailAddress}</p>
                 </div>
               </div>
 
               <div className="d-flex text-center">
-                <p className="m-0 col-4">도착</p>
-                <div className="col-8 d-flex  gap-3  justify-content-center">
-                  <p className="m-0">{whereEnd.address}</p>
+                <p className="m-0 col-4">집크기</p>
+                <div className="col-8 d-flex   justify-content-center">
+                  <p className="m-0">{whatHouse}</p>
+                  <p className="m-0">{ispyung}</p>
                 </div>
               </div>
 
               <div className="d-flex text-center">
-                <p className="m-0 col-4">차량</p>
-                <div className="col-8 d-flex  gap-3  justify-content-center">
-                  <p className="m-0">{isWhatCar}</p>
+                <p className="m-0 col-4">방/창문 개수</p>
+                <div className="col-8 d-flex  gap-5  justify-content-center">
+                  <div className="d-flex gap-3">
+                    <p className="m-0">방 : </p>
+                    <p className="m-0">{roomCounts}</p>
+                  </div>
+
+                  <div className="d-flex gap-3">
+                    <p className="m-0">창문 : </p>
+                    <p className="m-0">{windowCounts}</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div style={{ borderBottom: "solid 1px #006EEE" }} className="d-flex flex-column gap-2 p-3">
               <div className="d-flex text-center">
-                <p className="m-0 col-4">포장</p>
+                <p className="m-0 col-4">발코니/베란다</p>
                 <div className="col-8 d-flex  gap-3  justify-content-center">
-                  <p className="m-0">{whatPacking}</p>
+                  <p className="m-0">{isBalkoni}</p>
                 </div>
               </div>
 
               <div className="d-flex text-center">
-                <p className="m-0 col-4">탑승</p>
+                <p className="m-0 col-4">복층 여부 </p>
                 <div className="col-8 d-flex  gap-3  justify-content-center">
-                  <p className="m-0">{whatRiding}</p>
+                  <p className="m-0">{isBok}</p>
                 </div>
               </div>
 
               <div className="d-flex text-center">
-                <p className="m-0 col-4">엘레베이터</p>
+                <p className="m-0 col-4">추가 서비스 </p>
                 <div className="col-8 d-flex  gap-3  justify-content-center">
-                  <p className="m-0">{isElavator}</p>
+                  <p className="m-0">{Object.entries(option)
+                    .filter(([key, value]) => value === true)
+                    .map(([key]) => {
+                      // 여기에서 각 key에 맞는 서비스 이름을 가져오는 함수 또는 매핑을 사용하세요.
+                      const serviceName = getServiceNameByKey(key);
+                      return serviceName;
+                    })
+                    .join(', ')}</p>
                 </div>
               </div>
 
-              <div className="d-flex text-center">
-                <p className="m-0 col-4">주차장</p>
-                <div className="col-8 d-flex  gap-3  justify-content-center">
-                  <p className="m-0">{isCarStation}</p>
-                </div>
-              </div>
 
               <div className="d-flex text-center">
                 <p className="m-0 col-4">가구사진</p>
