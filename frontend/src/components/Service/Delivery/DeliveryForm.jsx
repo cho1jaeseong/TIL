@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, stagger, useAnimate } from "framer-motion";
 import ReactDatePicker from "react-datepicker";
 import Calendar from "./Calendar";
 import "react-datepicker/dist/react-datepicker.css";
@@ -25,7 +25,7 @@ export default function DeliveryForm() {
   const [isDropdownClockOpen, setDropdownClockOpen] = useState(false);
   const [isDropdownCarOpen, setDropdownCarOpen] = useState(false)
   const [isWhatTime, setisWhatTime] = useState(null)
-  const [isWhatCar, setisWhatCar] = useState(null)
+  const [isWhatCar, setisWhatCar] = useState("다마스") //고쳐야함
   const [whatPacking, setwhatPacking] = useState(null)
   const [whatRiding, setwhatRiding] = useState(null)
   const [isElavator, setisElavator] = useState(null)
@@ -45,10 +45,12 @@ export default function DeliveryForm() {
   const [carId, setCarID] = useState(null)
   const [carDistance, setCarDistance] = useState(null)
   const [carTime, setCarTime] = useState(null)
-  const [startDetailAddress, setStartDetailAddress] = useState(null)
-  const [endDetailAddress, setEndDetailAddress] = useState(null)
+  const [startDetailAddress, setStartDetailAddress] = useState("")
+  const [endDetailAddress, setEndDetailAddress] = useState("")
   const [endTime ,setEndTime] = useState(null)
   const [carData, setCarData] = useState("")
+  const [scope,animate] = useAnimate()
+  const [newscope , newanimate] = useAnimate()
   const hadleElavator = (event) => {
     setisElavator(event.target.innerText)
   }
@@ -115,7 +117,9 @@ export default function DeliveryForm() {
         }
 
       } else {
-        console.log("다시")
+        animate("#inputcomponent", { x: [-10, 0, 20, 0] }, { type: "spring", duration: 1, delay: stagger(0.05) })
+
+
       }
     }
     else if (isActive === "second") {
@@ -126,7 +130,7 @@ export default function DeliveryForm() {
         if (activeStep < totalSteps) {
           setActiveStep(activeStep + 1);
         }
-      } else { console.log("입력을 해주세요") }
+      } newanimate("#secondcomponent", {  x: [-10, 0, 20, 0] }, { type: "spring", duration: 1, delay: stagger(0.05) })
 
 
     }
@@ -292,7 +296,7 @@ export default function DeliveryForm() {
 
       {isActive === "first" && <motion.div key="firstForm" >
 
-        <motion.div initial={{ opacity: 0.1 }} animate={{ opacity: 1 }} exit={{ opacity: 0.1 }} transition={{ duration: 0.3 }}  >
+        <motion.div  initial={{ opacity: 0.1 }} animate={{ opacity: 1 }} exit={{ opacity: 0.1 }} transition={{ duration: 0.3 }}  >
           <Link to="/dashboard" className="d-flex align-items-center gap-2" style={{
             position: 'absolute',
             top: '10%',
@@ -321,7 +325,7 @@ export default function DeliveryForm() {
           <motion.p className="m-0" style={{ color: "#006EEE" }}>다음으로&rarr;</motion.p>
 
         </motion.h5>
-        <motion.div className="d-flex justify-content-center align-items-center" style={{ width: "100vw", height: "100vh" }} initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.3 }} >
+        <motion.div ref={scope} className="d-flex justify-content-center align-items-center" style={{ width: "100vw", height: "100vh" }} initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.3 }} >
 
           <div className="col-12 d-flex flex-column justify-content-center align-items-center">
             <div className="col-6 gap-5 d-flex flex-column" >
@@ -336,7 +340,7 @@ export default function DeliveryForm() {
               <div>
                 <div className="d-flex gap-5 align-items-center">
                   {/* 첫 번째 라디오 버튼 */}
-                  <div className="d-flex gap-3  ">
+                  <div className="d-flex gap-3  " id={selectedOption ? "" : "inputcomponent"}>
                     <motion.div
                       whileHover={{ cursor: "pointer", scale: 1.1 }}
                       className={`d-flex gap-3 justify-content-center align-items-center ${selectedOption === 'AM' ? 'checked' : ''}`}
@@ -366,12 +370,12 @@ export default function DeliveryForm() {
                   </div>
                   {/* 드롭다운 버튼 */}
                   <div style={{ position: "relative" }} className="d-flex align-items-center gap-4">
-                    <button className="btn btn-primary rounded-5 d-flex  align-items-center gap-2 p-2 " style={{ width: "10rem", height: "4rem" }} onClick={toggleClockDropdown}>
+                    <button id={isWhatTime ? "" : "inputcomponent"} className="btn btn-primary rounded-5 d-flex  align-items-center gap-2 p-2 " style={{ width: "10rem", height: "4rem" }} onClick={toggleClockDropdown}>
                       <p className="m-0 col-10">{isWhatTime || "시간선택"}</p><img className="col-2" src='/clock.png' style={{ width: "1rem", height: "1rem" }} />
                     </button>
                     <AnimatePresence>
                       {isDropdownClockOpen && (
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        <motion.div  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                           className="mt-2" style={{ position: "absolute", top: "100%", left: 0, zIndex: 1 }}>
                           <Clock setisWhatTime={setisWhatTime} toggleClockDropdown={toggleClockDropdown} />
                         </motion.div>
@@ -385,11 +389,12 @@ export default function DeliveryForm() {
               <div>
                 <div style={{ position: "relative" }} className="d-flex align-items-center gap-4">
                   <motion.button
+                  id={isWhatCar? "" : "inputcomponent"}
                     className="btn btn-primary rounded-5 d-flex justify-content-center align-items-center  p-2"
                     style={{ width: "10rem", height: "4rem" }}
                     onClick={toggleCarDropdown}
                   >
-                    <p className="m-0 col-10">{isWhatCar || "차량선택"}</p>
+                    <p  className="m-0 col-10">{isWhatCar || "차량선택"}</p>
                     <motion.img
                       className="col-2"
                       src='/caret-down-fill.png'
@@ -443,10 +448,10 @@ export default function DeliveryForm() {
           />
           <motion.p className="m-0" style={{ color: "#006EEE" }}>이전으로</motion.p>
         </motion.h5>
-        <motion.div className="col-12 d-flex justify-content-center align-items-center " style={{ height: "100vh", widt: "100vw" }} initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.3 }}  >
+        <motion.div ref={newscope} className="col-12 d-flex justify-content-center align-items-center " style={{ height: "100vh", widt: "100vw" }} initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }} transition={{ duration: 0.3 }}  >
           <div className="col-8 d-flex gap-3 ">
             <motion.div className="col-6 d-flex flex-column gap-4 p-3">
-              <div className="d-flex justify-content-center gap-1 align-items-center text-center" style={{ width: "100%", height: "2rem" }}>
+              <div id={whereStart.address ? "":"secondcomponent"} className="d-flex justify-content-center gap-1 align-items-center text-center" style={{ width: "100%", height: "2rem" }}>
                 <div className="col-1 fw-bold">출발 : </div>
                 <div className="col-9 shadow rounded-4 fw-bold d-flex justify-content-center align-items-center" style={{ height: "100%" }} > {whereStart.address ? (
                   <p className="m-0">{whereStart.address}</p>
@@ -455,13 +460,13 @@ export default function DeliveryForm() {
                 )}</div>
                 <button onClick={() => hadleModal("start")} className="btn-primary btn col-2 d-flex justify-content-center align-items-center" style={{ height: "100%" }}><p className="m-0">찾기</p></button>
               </div>
-              <div>
+              <div id={startDetailAddress ===""? "secondcomponent":""}>
                 <div className="col-9 d-flex " style={{ width: "100%" }} >
                   <div className="col-2 fw-bold">출발상세주소 : </div>
                   <input style={{ border: "none" }} className="col-10 shadow fw-bold text-center rounded-4 " placeholder="상세주소를 입력해주세요!" type="text" onChange={(event) => setStartDetailAddress(event.target.value)} ></input>
                 </div>
               </div>
-              <div className="d-flex justify-content-center gap-1 align-items-center text-center" style={{ width: "100%", height: "2rem" }}>
+              <div id={whereEnd.address ? "":"secondcomponent"} className="d-flex justify-content-center gap-1 align-items-center text-center" style={{ width: "100%", height: "2rem" }}>
                 <div className="col-1 fw-bold">도착 : </div>
                 <div className="col-9 shadow rounded-4 fw-bold d-flex justify-content-center align-items-center" style={{ height: "100%" }}>
                   {whereEnd.address ? (
@@ -472,7 +477,7 @@ export default function DeliveryForm() {
                 </div>
                 <button onClick={() => hadleModal("end")} className="btn-primary btn col-2 d-flex justify-content-center align-items-center" style={{ height: "100%" }}><p className="m-0">찾기</p></button>
               </div>
-              <div className="col-9 d-flex " style={{ width: "100%" }} >
+              <div id={endDetailAddress ===""? "secondcomponent":""} className="col-9 d-flex " style={{ width: "100%" }} >
                 <div className="col-2 fw-bold">도착상세주소 : </div>
                 <input style={{ border: "none" }} className="col-10 shadow fw-bold text-center rounded-4 " placeholder="상세주소를 입력해주세요!" type="text" onChange={(event) => setEndDetailAddress(event.target.value)} ></input>
               </div>
@@ -490,7 +495,7 @@ export default function DeliveryForm() {
             </motion.div>
 
             <div className="col-6 p-3 gap-4 d-flex flex-column" >
-              <div className="d-flex justify-content-center gap-2 align-items-center text-center">
+              <div id={whatPacking ? "":"secondcomponent"} className="d-flex justify-content-center gap-2 align-items-center text-center">
                 <p className="m-0 col-3 fw-bold">포장여부</p>
                 <div className="col-3">
                   <CheckButton checkPacking={checkPacking} isActive={whatPacking === "포장"} name="포장" />
@@ -503,7 +508,7 @@ export default function DeliveryForm() {
                 </div>
               </div>
 
-              <div className="d-flex justify-content-center gap-2 align-items-center text-center">
+              <div  id={whatRiding ? "":"secondcomponent"} className="d-flex justify-content-center gap-2 align-items-center text-center">
                 <p className="m-0 col-3 fw-bold">탑승여부</p>
                 <div className="col-3">
                   <CheckButton checkPacking={checkRiding} isActive={whatRiding === "탑승"} name="탑승" />
@@ -514,7 +519,7 @@ export default function DeliveryForm() {
                 <div className="col-3"></div>
               </div>
 
-              <div className="d-flex justify-content-center gap-2 align-items-center text-center">
+              <div id={isElavator ? "":"secondcomponent"} className="d-flex justify-content-center gap-2 align-items-center text-center">
                 <p className="m-0 col-3 fw-bold">엘레베이터</p>
                 <div className="col-3">
                   <CheckButton checkPacking={hadleElavator} isActive={isElavator === "있음"} name="있음" />
@@ -525,7 +530,7 @@ export default function DeliveryForm() {
                 <div className="col-3"></div>
               </div>
 
-              <div className="d-flex justify-content-center gap-2 align-items-center text-center">
+              <div  id={isCarStation ? "":"secondcomponent"} className="d-flex justify-content-center gap-2 align-items-center text-center">
                 <p className="m-0 col-3 fw-bold">주차장</p>
                 <div className="col-3">
                   <CheckButton checkPacking={hadleCarStation} isActive={isCarStation === "있음"} name="있음" />
