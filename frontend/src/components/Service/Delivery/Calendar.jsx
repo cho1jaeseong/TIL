@@ -17,7 +17,7 @@ const Calendar = ({ setStartDate, startDate}) => {
 
   const handleDateChange = (date) => {
     // Update the startDate state
-    console.log(date)
+    // console.log(date)
     setStartDate(date);
     // Extract the time from the formatted date string
     // const timeIncluded = date && date.getHours() > 0;

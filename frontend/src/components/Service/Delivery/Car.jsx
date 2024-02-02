@@ -6,7 +6,7 @@ export default function Car({ data, setisWhatCar, toggleCarDropdown ,setCarID}) 
   const handleCar = (info) => {
     setisWhatCar(info.name);
     setCarID(info.carId)
-    console.log(info.carId)
+    // console.log(info.carId)
     toggleCarDropdown();
   };
 
