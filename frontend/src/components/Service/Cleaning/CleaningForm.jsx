@@ -121,8 +121,7 @@ export default function CleaningFrom() {
       const result = await axios_CallCLE();
 
       // 결과가 내비게이션에 필요한 정보를 포함하고 있다고 가정합니다.
-      const navigate = useNavigate();
-      navigate('/recommend', { state: result.data }); // 결과 데이터를 state로 전달
+      navigate('/recommend', { state: {"calresult": result.data} }); // 결과 데이터를 state로 전달 company-list 데이터 넘기기, 예약신청 위한 데이터 넘기기, 청소,용달 구분 인자 넘기기,  
     } catch (error) {
       // axios_CallDel()이 실패하면 오류 처리
       console.error('제출 중 오류 발생:', error);

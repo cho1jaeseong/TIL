@@ -61,7 +61,7 @@ export default function UserProfile() {
         setshowreviewDropDown(!showreviewDropDown);
     };
     return <>
-        <div className="d-flex col-8 gap-5 align-items-start p-3">
+        <div className="d-flex col-8 gap-5 align-items-start p-3" style={{marginTop:"5rem"}}>
             <div className="d-flex col-4 flex-column align-items-center rounded-5 gap-3 p-4 shadow">
                 <div className="d-flex justify-content-center align-items-center gap-2">
                     <img style={{ width: "5rem", height: "5rem" }} src="./randomimg.png" />
