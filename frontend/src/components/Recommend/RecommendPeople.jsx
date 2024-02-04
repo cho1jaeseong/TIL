@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import StarRating from "./StarRating";
 import RecommendModal from "./RecommendModal";
 
-export default function RecommendPeople({ name, rating }) {
+export default function RecommendPeople({ props}) {
     const [imageSrc, setImageSrc] = useState("/truck.png");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const handleModal =() =>{
@@ -44,7 +44,7 @@ export default function RecommendPeople({ name, rating }) {
                 </div>
                 <div className="d-flex col-md-8 flex-column justify-content-center gap-3">
                     <div className="gap-3 d-flex justify-content-center">
-                        <h5 className="m-0  col-md-3 fw-bold">{name}</h5>
+                        <h5 className="m-0  col-md-3 fw-bold">{props.companyName}</h5>
                         <div className=" col-md-3 d-flex flex-column justify-content-center align-items-center">
                             <StarRating rating={rating} />
                             <p className="fw-bold">{rating}점</p>
@@ -53,13 +53,13 @@ export default function RecommendPeople({ name, rating }) {
                     </div>
                     <div className="gap-3 d-flex justify-content-center">
                         <div className="border border-primary rounded-5 bg-white col-md-3 text-center">
-                            asdf
+                            {props.tags[0]}
                         </div>
                         <div className="border border-primary rounded-5 bg-white col-md-3 text-center">
-                            asdf
+                        {props.tags[1]}
                         </div>
                         <div className="border border-primary rounded-5 bg-white col-md-3 text-center">
-                            asdf
+                        {props.tags[2]}
                         </div>
                     </div>
                 </div>

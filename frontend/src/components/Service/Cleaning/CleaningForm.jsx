@@ -11,6 +11,7 @@ import ProgressBar from "./Progressbar"; // 대소문자 이슈
 
 import Address from "./Address";
 import AddButton from "./AddButton";
+import axios from "axios";
 // import { faL } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -44,6 +45,9 @@ export default function CleaningFrom() {
   const [windowCounts, setWindowCounts] = useState(null)
   const [scope,animate] =useAnimate()
   const [newscope,newanimate] =useAnimate()
+  const [calResult,setcalresult] = useState()
+  const [isLoading,setIsLoading] =useState(false)
+  const [sigungu, setSigungu] = useState("")
   const getToday = (value) => {
     return value.toISOString().split('T')[0];
   };
@@ -111,9 +115,19 @@ export default function CleaningFrom() {
 
     }
   }
-  const hadlesubmit = () => {
-    navigate('/recommend')
-  }
+  const handlesubmit = async () => {
+    try {
+      // axios_CallDel 호출 및 응답 받기
+      const result = await axios_CallCLE();
+
+      // 결과가 내비게이션에 필요한 정보를 포함하고 있다고 가정합니다.
+      const navigate = useNavigate();
+      navigate('/recommend', { state: result.data }); // 결과 데이터를 state로 전달
+    } catch (error) {
+      // axios_CallDel()이 실패하면 오류 처리
+      console.error('제출 중 오류 발생:', error);
+    }
+  };
 
   const goTobeforeForm = () => {
     if (isActive === "second") { setIsActive("first") }
@@ -155,6 +169,82 @@ export default function CleaningFrom() {
     setOption(updatedOption);
   };
 
+  const axios_cal = async () => {
+    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
+    const roomSize = parseInt(whatHouse, 10)
+    const roomCount = parseInt(roomCounts, 10)
+    const windowCount =parseInt(windowCounts,10)
+    
+    let balconyExistence = ""
+    let duplex =  ""
+    let mold = ""
+    let externalWindow = ""
+    let houseSynddrome = ""
+    let removeSticker = ""
+    if (isBalkoni === "있음") { balconyExistence = true }
+    else { balconyExistence = false }
+
+    if (isBok === "네") { duplex = true }
+    else { duplex = false }
+    
+    setIsLoading(true)
+    try {
+      const response = await axios.post('http://192.168.45.150:8080/api/clean/user/calculation',
+        {
+          "reservationTime":`${getToday(startDate)} ${isWhatTime}`,
+          "roomSize": roomSize,
+          "roomCount": roomCount,
+          "windowCount": windowCount,
+          "balconyExistence": balconyExistence,
+          "duplex": duplex,
+          "mold": option.isGom,
+          "externalWindow": option.isOutsideWindow,
+          "houseSyndrome": option.isNewHous,
+          "removeSticker": option.isSticker,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setcalresult(response.data.result.price)
+
+     
+      setIsLoading(false)
+
+      return response
+    } catch (error) {
+      console.error(error);
+      return error
+    }
+
+  }
+  const axios_CallCLE = async () => {
+    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
+    // console.log(`${getToday(startDate)} ${isWhatTime}`)
+    console.log(sigungu)
+    try {
+      const response = await axios.post(
+        'http://192.168.45.150:8080/api/clean/user/company-list',
+        {
+          "reservationTime": `${getToday(startDate)} ${isWhatTime}`, // 실제 시작 시간을 올바른 날짜 및 시간 형식으로 교체
+          "sigungu": sigungu, // 실제 sigungu 값으로 교체 (정수)
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log(response)
+      return response
+    }
+    catch (e) {
+
+    }
+  }
   return (<>
     <div style={{
       position: 'absolute', width: '20%', top: '15%',
@@ -163,6 +253,38 @@ export default function CleaningFrom() {
       <ProgressBar steps={totalSteps} activeStep={activeStep} />
     </div>
     <AnimatePresence>
+    <AnimatePresence>
+      {isLoading && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)}
+          style={{
+            zIndex: "99",
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경색 및 투명도 조절
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <div style={{
+            position: 'relative',
+            width: '40%',
+            // backgroundColor: 'white', // 내용의 배경색
+            padding: '20px',
+            borderRadius: '8px', // 내용의 모서리 둥글게
+          }}>
+            <div className="d-flex justify-content-center align-items-center gap-4 " style={{ width: "100%" }}>
+              <img style={{ width: "20rem", height: "20rem" }} src="./cal.png" />
+              {/* <h2 style={{color:"white"}}>계산이 진행중입니다..</h2> */}
+              <Wave />
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+
       {isModalOpen && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)}
           style={{
@@ -184,7 +306,7 @@ export default function CleaningFrom() {
             padding: '20px',
             borderRadius: '8px', // 내용의 모서리 둥글게
           }}>
-            <Address whatModal={whatModal} setwhereStart={setwhereStart} setwhereEnd={setwhereEnd} setIsModalOpen={setIsModalOpen} />
+            <Address setSigungu={setSigungu} whatModal={whatModal} setwhereStart={setwhereStart} setwhereEnd={setwhereEnd} setIsModalOpen={setIsModalOpen} />
           </div>
         </motion.div>
       )}

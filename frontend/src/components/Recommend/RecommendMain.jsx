@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import RecommendPeople from "./RecommendPeople";
 import { motion } from "framer-motion"
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import  "./RecommendMain.css"
 const DUMMY_DATA = [
     { name: "미친개", rating: 4.5 },
@@ -22,7 +22,8 @@ const DUMMY_DATA = [
     { name: "미친개", rating: 4.5 },
 ];
 
-export default function RecommendMain() {
+export default function RecommendMain({data}) {
+   
     const navigate = useNavigate()
     const itemsPerPage = 5;
     const [visibleItems, setVisibleItems] = useState(itemsPerPage);
@@ -57,9 +58,9 @@ export default function RecommendMain() {
                     style={{ width: "100%" }}
                     className="d-flex flex-column gap-3"
                 >
-                    {DUMMY_DATA.slice(0, visibleItems).map((item, index) => (
+                    {data.map((item, index) => (
                         <motion.div key={index} variants={{ visible: { opacity: 1, y: 0 } }} initial={{ opacity: 0, y: 20 }}>
-                            <RecommendPeople name={item.name} rating={item.rating} />
+                            <RecommendPeople props={item.companys} />
                         </motion.div>
                     ))}
                 </motion.div>

@@ -25,7 +25,7 @@ export default function DeliveryForm() {
   const [isDropdownClockOpen, setDropdownClockOpen] = useState(false);
   const [isDropdownCarOpen, setDropdownCarOpen] = useState(false)
   const [isWhatTime, setisWhatTime] = useState(null)
-  const [isWhatCar, setisWhatCar] = useState("") //고쳐야함
+  const [isWhatCar, setisWhatCar] = useState("다마스") //고쳐야함
   const [whatPacking, setwhatPacking] = useState(null)
   const [whatRiding, setwhatRiding] = useState(null)
   const [isElavator, setisElavator] = useState(null)
@@ -51,7 +51,7 @@ export default function DeliveryForm() {
   const [carData, setCarData] = useState("")
   const [scope, animate] = useAnimate()
   const [newscope, newanimate] = useAnimate()
-  const [sigungu , setSigungu] = useState("")
+  const [sigungu, setSigungu] = useState("")
   const hadleElavator = (event) => {
     setisElavator(event.target.innerText)
   }
@@ -139,10 +139,19 @@ export default function DeliveryForm() {
   }
 
 
-  const hadlesubmit =async () => {
-    const result = await axios_CallDel()
-    // navigate('/recommend')
-  }
+  const handlesubmit = async () => {
+    try {
+      // axios_CallDel 호출 및 응답 받기
+      const result = await axios_CallDel();
+
+      // 결과가 내비게이션에 필요한 정보를 포함하고 있다고 가정합니다.
+      const navigate = useNavigate();
+      navigate('/recommend', { state: result.data }); // 결과 데이터를 state로 전달
+    } catch (error) {
+      // axios_CallDel()이 실패하면 오류 처리
+      console.error('제출 중 오류 발생:', error);
+    }
+  };
   const goTobeforeForm = () => {
     if (isActive === "second") { setIsActive("first") }
     else if (isActive === "third") { setIsActive("second") }
@@ -161,7 +170,7 @@ export default function DeliveryForm() {
     const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
 
     try {
-      const response = await axios.get('http://192.168.30.145:8080/api/delivery/user/car', {
+      const response = await axios.get('http://192.168.45.150:8080/api/delivery/user/car', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -247,7 +256,7 @@ export default function DeliveryForm() {
     else { parking = false }
     setIsLoading(true)
     try {
-      const response = await axios.post('http://192.168.30.145:8080/api/delivery/user/calculation',
+      const response = await axios.post('http://192.168.45.150:8080/api/delivery/user/calculation',
         {
           "carId": carId,
           "departureX": whereStart.lon,
@@ -268,8 +277,8 @@ export default function DeliveryForm() {
       );
 
       setcalresult(response.data.result.price)
-      
-      const endtimee  = new Date(response.data.result.endTime) 
+
+      const endtimee = new Date(response.data.result.endTime)
       console.log(endtimee.toISOString().slice(0, 16).replace('T', ' '))
       setEndTime(endtimee.toISOString().slice(0, 16).replace('T', ' '))
       setIsLoading(false)
@@ -288,7 +297,7 @@ export default function DeliveryForm() {
     console.log(sigungu)
     try {
       const response = await axios.post(
-        'http://192.168.30.125:8080/api/delivery/user/company-list',
+        'http://192.168.45.150:8080/api/delivery/user/company-list',
         {
           startTime: `${getToday(startDate)} ${isWhatTime}`, // 실제 시작 시간을 올바른 날짜 및 시간 형식으로 교체
           endTime: endTime, // 실제 종료 시간을 올바른 날짜 및 시간 형식으로 교체
@@ -749,21 +758,21 @@ export default function DeliveryForm() {
 
               <div className="d-flex text-center">
                 <p className="m-0 col-4">가구사진</p>
-                { console.log(selectedFiles)}
+                {console.log(selectedFiles)}
                 {
-                selectedFiles && selectedFiles.length !== 0 && (
-                  <div className="col-8 d-flex gap-3 justify-content-center shadow" style={{ overflowX: "auto" }}>
-                    {selectedFiles.map((file, index) => (
-                      <div key={index} className="d-flex flex-column justify-content-center align-items-center">
-                        <img
-                          src={file.previewURL}
-                          alt={`선택된 파일 ${index + 1} 미리보기`}
-                          style={{ width: "7rem", height: "7rem" }}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
+                  selectedFiles && selectedFiles.length !== 0 && (
+                    <div className="col-8 d-flex gap-3 justify-content-center shadow" style={{ overflowX: "auto" }}>
+                      {selectedFiles.map((file, index) => (
+                        <div key={index} className="d-flex flex-column justify-content-center align-items-center">
+                          <img
+                            src={file.previewURL}
+                            alt={`선택된 파일 ${index + 1} 미리보기`}
+                            style={{ width: "7rem", height: "7rem" }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
 
               </div>

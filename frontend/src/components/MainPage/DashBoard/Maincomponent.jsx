@@ -21,6 +21,20 @@ const MainComponent = () => {
             },
         },
     };
+    const CLE_Call = async () => {
+        const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
+
+        try {
+            const response = await axios.get('http://192.168.30.125:8080/api/clean/user/reservation', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setRequestCLEList(response.data.result)
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const DEL_Call = async () => {
         const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
@@ -38,7 +52,10 @@ const MainComponent = () => {
     };
     useEffect(() => {
         DEL_Call();
+        CLE_Call()
     }, []);
+
+
 
     const navigate = useNavigate()
     const hadleDelivery = () => {
@@ -128,7 +145,9 @@ const MainComponent = () => {
                                 {
                                     (requestList === "용달" ? requestDelList : requestCLEList).map((item) => {
                                         const originalDate = new Date(item.createDt);
-                                        const orderDate = new Date(item.startTime);
+                                        let orderDate=""
+                                        { requestList==="용달" ? orderDate = new Date(item.startTime) :orderDate = new Date(item.reservationTime) }
+                                        
                                         const formatDate = `${originalDate.getFullYear()}.${(originalDate.getMonth() + 1).toString().padStart(2, '0')}.${originalDate.getDate().toString().padStart(2, '0')}`;
                                         const formatoder = `${(orderDate.getMonth() + 1).toString().padStart(2, '0')}${orderDate.getDate().toString().padStart(2, '0')}/${item.departure}/${requestList}`;
                                         let orderName = "";
