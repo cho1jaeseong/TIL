@@ -15,6 +15,33 @@ import ReviewToPeopleView from "./ReviewToPeople/ReviewToMeView";
 
 export default function UserProfile() {
    const [changeButton,setChangeButton] = useState("판매 물품")
+   const [offset,setOffSet] = useState(0)
+//    const myReceive = async () => {
+    
+//     console.log(`${getToday(startDate)} ${isWhatTime}`)
+//     console.log(sigungu)
+//     try {
+//       const response = await api.post(
+//         '/reviews/myReceive',
+//         {
+//           "memberId":
+//           "role" : a
+          
+//           "limit": 5 // 실제 limit 값으로 교체 (정수)
+//           "offset": offset
+//         },
+//         {
+//           headers: {
+//           }
+//         }
+//       );
+//       console.log(response)
+//       return response
+//     }
+//     catch (e) {
+
+//     }
+//   }
     const handleChangeButton = ( event)  =>{
         setChangeButton(event.target.innerText)
         setShowUsedDropDown(false);
