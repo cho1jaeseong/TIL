@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import ChatModalList from './ChatModalList';
 import styles from './ChatModal.module.css'; // Import the CSS module
 import axios from 'axios';
+import { api } from '../../services/api';
 
 
 
@@ -13,16 +14,15 @@ const ChatModal = () => {
   const [openModal, setOpenModal] = useState()
   const [ChatList, setChatList] = useState()
   const Chat_Call = async () => {
-    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
-
+    
     try {
-      const response = await axios.get('http://192.168.30.145:8080/api/chat/rooms', {
+      const response = await api.get('/chat/rooms', {
         headers: {
-          Authorization: `Bearer ${token}`
+        
         }
       });
-      setChatList(response.data.result);
-      console.log(response.data.result);
+      setChatList(response.data.result)
+      console.log(response.data.result)
     } catch (error) {
       console.error(error);
     }
@@ -48,7 +48,7 @@ const ChatModal = () => {
             }}
             exit={{ opacity: 1, y: 30 }}
             transition={{ type: 'tween' }}
-            onClick={() => setOpenModal(true)}
+            onClick={()=>setOpenModal(true)}
           >
             <ChatModalList
               img={data.receiverProfileImage}
@@ -58,7 +58,7 @@ const ChatModal = () => {
               chatroomId={data.chatRoomId}
               receiverId={data.receiverId}
             />
-
+            
           </motion.div>
         ))}
 

@@ -14,6 +14,7 @@ import Address from "./Address";
 import Map from "./Map";
 import axios from "axios";
 import Wave from "../../MainPage/DashBoard/Wave";
+import { api } from "../../../services/api";
 
 
 
@@ -25,7 +26,7 @@ export default function DeliveryForm() {
   const [isDropdownClockOpen, setDropdownClockOpen] = useState(false);
   const [isDropdownCarOpen, setDropdownCarOpen] = useState(false)
   const [isWhatTime, setisWhatTime] = useState(null)
-  const [isWhatCar, setisWhatCar] = useState("다마스") //고쳐야함
+  const [isWhatCar, setisWhatCar] = useState("") //고쳐야함
   const [whatPacking, setwhatPacking] = useState(null)
   const [whatRiding, setwhatRiding] = useState(null)
   const [isElavator, setisElavator] = useState(null)
@@ -51,7 +52,7 @@ export default function DeliveryForm() {
   const [carData, setCarData] = useState("")
   const [scope, animate] = useAnimate()
   const [newscope, newanimate] = useAnimate()
-  const [sigungu, setSigungu] = useState("")
+  const [sigungu , setSigungu] = useState("")
   const hadleElavator = (event) => {
     setisElavator(event.target.innerText)
   }
@@ -139,19 +140,55 @@ export default function DeliveryForm() {
   }
 
 
-  const handlesubmit = async () => {
+  const hadlesubmit = async () => {
     try {
-      // axios_CallDel 호출 및 응답 받기
-      const result = await axios_CallDel();
+      const result = await axios_CallDel(); 
+      console.log(result)
 
-      // 결과가 내비게이션에 필요한 정보를 포함하고 있다고 가정합니다.
-      const navigate = useNavigate();
-      navigate('/recommend', { state: result.data }); // 결과 데이터를 state로 전달
+      let packaging = ""
+      let move = ""
+      let elevator = ""
+      let parking = ""
+      if (whatPacking === "포장") { packaging = true }
+      else { packaging = false }
+      if (whatRiding === "탑승") { move = true }
+      else { move = false }
+      if (isElavator === "있음") { elevator = true }
+      else { elevator = false }
+      if (isCarStation === "있읍") { parking = true }
+      else { parking = false }
+
+
+      navigate('/recommend', {
+        state: {
+          type: "용달",
+          axios_data: result.data, 
+          userInput: {
+            "imageFileList": [selectedFiles], // 필요한 경우 이미지 파일 배열로 교체
+            "price":calresult, // 실제 가격 값으로 교체 (긴 정수)
+            "delivery": {
+              "carId": carId, // 실제 carId 값으로 교체 (긴 정수)
+              "startTime": `${getToday(startDate)} ${isWhatTime}`, // 실제 시작 시간을 올바른 날짜 및 시간 형식으로 교체
+              "endTime": endTime, // 실제 종료 시간을 올바른 날짜 및 시간 형식으로 교체
+              "departure":whereStart.address, // 실제 출발지 값으로 교체 (문자열)
+              "departureDetail": startDetailAddress, // 실제 출발지 상세정보 값으로 교체 (문자열)
+              "destination": whereEnd.address, // 실제 도착지 값으로 교체 (문자열)
+              "destinationDetail": endDetailAddress, // 실제 도착지 상세정보 값으로 교체 (문자열)
+              "packaging": packaging, // 실제 값으로 교체 (부울)
+              "move": move, // 실제 값으로 교체 (부울)
+              "elevator": elevator, // 실제 값으로 교체 (부울)
+              "parking": parking, // 실제 값으로 교체 (부울)
+              "moveList": userinput, // 실제 이사 목록 값으로 교체 (문자열)
+              "sigungu": sigungu // 실제 sigungu 값으로 교체 (긴 정수)
+            }
+          }
+        }
+      });
     } catch (error) {
-      // axios_CallDel()이 실패하면 오류 처리
-      console.error('제출 중 오류 발생:', error);
+
     }
-  };
+
+  }
   const goTobeforeForm = () => {
     if (isActive === "second") { setIsActive("first") }
     else if (isActive === "third") { setIsActive("second") }
@@ -167,10 +204,10 @@ export default function DeliveryForm() {
     setIsModalOpen(true)
   }
   const axios_car_list = async () => {
-    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
+    
 
     try {
-      const response = await axios.get('http://192.168.45.150:8080/api/delivery/user/car', {
+      const response = await api.get('/delivery/user/car', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -181,67 +218,9 @@ export default function DeliveryForm() {
       console.error(error);
     }
   };
-  // const axios_reservation = async () => {
-  //   const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
-  //   let packaging = ""
-  //   let move = ""
-  //   let elevator = ""
-  //   let parking = ""
-  //   if (whatPacking === "포장") { packaging = true }
-  //   else { packaging = false }
-  //   if (whatRiding === "탑승") { move = true }
-  //   else { move = false }
-  //   if (isElavator === "있음") { elevator = true }
-  //   else { elevator = false }
-  //   if (isCarStation === "있읍") { parking = true }
-  //   else { parking = false }
-  //   setIsLoading(true)
-  //   try {
-  //     const response = await axios.post('http://192.168.30.125:8080/api/delivery/user/reservation',
-  //       {
-  //         "companys": [
-  //           {
-  //             "memberId": 123 // 실제 memberId 값으로 교체 (정수)
-  //           }
-  //         ],
-  //         "imageFileList": [], // 필요한 경우 이미지 파일 배열로 교체
-  //         "price":calresult, // 실제 가격 값으로 교체 (긴 정수)
-  //         "delivery": {
-  //           "carId": carId, // 실제 carId 값으로 교체 (긴 정수)
-  //           "startTime": `${getToday(startDate)} ${isWhatTime}`, // 실제 시작 시간을 올바른 날짜 및 시간 형식으로 교체
-  //           "endTime": endTime, // 실제 종료 시간을 올바른 날짜 및 시간 형식으로 교체
-  //           "departure":whereStart.address, // 실제 출발지 값으로 교체 (문자열)
-  //           "departureDetail": startDetailAddress, // 실제 출발지 상세정보 값으로 교체 (문자열)
-  //           "destination": whereEnd.address, // 실제 도착지 값으로 교체 (문자열)
-  //           "destinationDetail": endDetailAddress, // 실제 도착지 상세정보 값으로 교체 (문자열)
-  //           "packaging": packaging, // 실제 값으로 교체 (부울)
-  //           "move": move, // 실제 값으로 교체 (부울)
-  //           "elevator": elevator, // 실제 값으로 교체 (부울)
-  //           "parking": parking, // 실제 값으로 교체 (부울)
-  //           "moveList": userinput, // 실제 이사 목록 값으로 교체 (문자열)
-  //           "sigungu": 123 // 실제 sigungu 값으로 교체 (긴 정수)
-  //         }
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`
-  //         }
-  //       }
-  //     );
-
-
-  //     setcalresult(response.data.result.price)
-  //     setEndTime(response.data.result.endTime)
-  //     setIsLoading(false)
-
-  //     return response
-  //   } catch (error) {
-  //     console.error(error);
-  //     return error
-  //   }
-  // }
+  
   const axios_cal = async () => {
-    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
+    
     let packaging = ""
     let move = ""
     let elevator = ""
@@ -256,7 +235,7 @@ export default function DeliveryForm() {
     else { parking = false }
     setIsLoading(true)
     try {
-      const response = await axios.post('http://192.168.45.150:8080/api/delivery/user/calculation',
+      const response = await api.post('/delivery/user/calculation',
         {
           "carId": carId,
           "departureX": whereStart.lon,
@@ -271,14 +250,14 @@ export default function DeliveryForm() {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`
+      
           }
         }
       );
 
       setcalresult(response.data.result.price)
-
-      const endtimee = new Date(response.data.result.endTime)
+      
+      const endtimee  = new Date(response.data.result.endTime) 
       console.log(endtimee.toISOString().slice(0, 16).replace('T', ' '))
       setEndTime(endtimee.toISOString().slice(0, 16).replace('T', ' '))
       setIsLoading(false)
@@ -292,12 +271,12 @@ export default function DeliveryForm() {
   }
 
   const axios_CallDel = async () => {
-    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
+    
     console.log(`${getToday(startDate)} ${isWhatTime}`)
     console.log(sigungu)
     try {
-      const response = await axios.post(
-        'http://192.168.45.150:8080/api/delivery/user/company-list',
+      const response = await api.post(
+        '/delivery/user/company-list',
         {
           startTime: `${getToday(startDate)} ${isWhatTime}`, // 실제 시작 시간을 올바른 날짜 및 시간 형식으로 교체
           endTime: endTime, // 실제 종료 시간을 올바른 날짜 및 시간 형식으로 교체
@@ -306,7 +285,6 @@ export default function DeliveryForm() {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`
           }
         }
       );
@@ -758,21 +736,21 @@ export default function DeliveryForm() {
 
               <div className="d-flex text-center">
                 <p className="m-0 col-4">가구사진</p>
-                {console.log(selectedFiles)}
+                { console.log(selectedFiles)}
                 {
-                  selectedFiles && selectedFiles.length !== 0 && (
-                    <div className="col-8 d-flex gap-3 justify-content-center shadow" style={{ overflowX: "auto" }}>
-                      {selectedFiles.map((file, index) => (
-                        <div key={index} className="d-flex flex-column justify-content-center align-items-center">
-                          <img
-                            src={file.previewURL}
-                            alt={`선택된 파일 ${index + 1} 미리보기`}
-                            style={{ width: "7rem", height: "7rem" }}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                selectedFiles && selectedFiles.length !== 0 && (
+                  <div className="col-8 d-flex gap-3 justify-content-center shadow" style={{ overflowX: "auto" }}>
+                    {selectedFiles.map((file, index) => (
+                      <div key={index} className="d-flex flex-column justify-content-center align-items-center">
+                        <img
+                          src={file.previewURL}
+                          alt={`선택된 파일 ${index + 1} 미리보기`}
+                          style={{ width: "7rem", height: "7rem" }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
 
 
               </div>

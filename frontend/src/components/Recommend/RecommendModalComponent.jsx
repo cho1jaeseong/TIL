@@ -1,26 +1,31 @@
+import { useEffect } from "react";
 import Recommend from "../../pages/Service/Recommend";
 import RecommendReview from "./RecommendReview";
 import StarRating from "./StarRating";
-const DUMMY_DATA = [
-    {
-        name:"미친놈",
-        date:"2024.01.01",
-        rating:5.0,
-        text: "아오 이새끼 운전 개같이함"
-    },{
-        name:"어허",
-        date:"2024.01.02",
-        rating:4.5,
-        text: "음해 ㄴ"
-    },{
-        name:"진짜 또라인가",
-        date:"2024.01.03",
-        rating:3.5,
-        text: "아오 이새끼 운전 개같이함"
-    }]
+import axios from "axios";
+import { api } from "../../services/api";
 
-export default function RecommendModalComponent() {
 
+
+export default function RecommendModalComponent({companyId}) {
+    useEffect(()=>{
+        axios_detail()
+    }, [])
+    const axios_detail = async () => {
+        
+
+        try {
+            const response = await api.get(`/company/${companyId}`, {
+                headers: {
+                }
+            });
+            console.log(response.data.result)
+            setData(response.data.result)
+            return response
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
 
     return (

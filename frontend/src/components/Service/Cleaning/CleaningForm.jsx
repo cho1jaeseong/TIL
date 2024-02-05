@@ -12,6 +12,8 @@ import ProgressBar from "./Progressbar"; // 대소문자 이슈
 import Address from "./Address";
 import AddButton from "./AddButton";
 import axios from "axios";
+import Wave from "../../MainPage/DashBoard/Wave";
+import { api } from "../../../services/api";
 // import { faL } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -23,7 +25,7 @@ export default function CleaningFrom() {
   const [startDate, setStartDate] = useState(new Date());
   const [isDropdownClockOpen, setDropdownClockOpen] = useState(false);
   const [isWhatTime, setisWhatTime] = useState()
-
+  const [isLoading, setIsLoading] = useState(false)
   const [userinput, setuserinput] = useState("")
   const [isActive, setIsActive] = useState("first")
   const [isTime, setIsTime] = useState("")
@@ -43,10 +45,9 @@ export default function CleaningFrom() {
   const [whatHouse, setWhatHouse] = useState(null)
   const [roomCounts, setRoomCounts] = useState(null)
   const [windowCounts, setWindowCounts] = useState(null)
-  const [scope,animate] =useAnimate()
-  const [newscope,newanimate] =useAnimate()
-  const [calResult,setcalresult] = useState()
-  const [isLoading,setIsLoading] =useState(false)
+  const [scope, animate] = useAnimate()
+  const [newscope, newanimate] = useAnimate()
+  const [calResult, setcalResult] = useState("")
   const [sigungu, setSigungu] = useState("")
   const getToday = (value) => {
     return value.toISOString().split('T')[0];
@@ -104,29 +105,84 @@ export default function CleaningFrom() {
       }
     }
     else if (isActive === "second") {
-      if (whereStart && detailAddress && roomCounts && windowCounts && isBalkoni && isBok && whatHouse ) {
-        console.log(data)
+      if (whereStart && detailAddress && roomCounts && windowCounts && isBalkoni && isBok && whatHouse) {
+        const data = await axios_cal()
+        // console.log(data)
         setIsActive("third")
         if (activeStep < totalSteps) {
           setActiveStep(activeStep + 1);
         }
-      } newanimate("#secondcomponent", {  x: [-10, 0, 20, 0] }, { type: "spring", duration: 1, delay: stagger(0.05) })
+      } newanimate("#secondcomponent", { x: [-10, 0, 20, 0] }, { type: "spring", duration: 1, delay: stagger(0.05) })
 
 
     }
   }
-  const handlesubmit = async () => {
+  const axios_CallCle = async () => {
+    
     try {
-      // axios_CallDel 호출 및 응답 받기
-      const result = await axios_CallCLE();
-
-      // 결과가 내비게이션에 필요한 정보를 포함하고 있다고 가정합니다.
-      navigate('/recommend', { state: {"calresult": result.data} }); // 결과 데이터를 state로 전달 company-list 데이터 넘기기, 예약신청 위한 데이터 넘기기, 청소,용달 구분 인자 넘기기,  
-    } catch (error) {
-      // axios_CallDel()이 실패하면 오류 처리
-      console.error('제출 중 오류 발생:', error);
+      const response = await api.post(
+        '/clean/user/company-list',
+        {
+          reservationTime: `${getToday(startDate)} ${isWhatTime}`, // 실제 시작 시간을 올바른 날짜 및 시간 형식으로 교체
+          sigungu: sigungu, // 실제 sigungu 값으로 교체 (정수)
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      return response
     }
-  };
+    catch (e) {
+
+    }
+  }
+
+  const hadlesubmit = async () => {
+    try {
+      const result = await axios_CallCle();
+      console.log(result)
+      const roomSize = parseInt(whatHouse, 10)
+      const roomCount = parseInt(roomCounts, 10)
+      const windowCount = parseInt(windowCounts, 10)
+      let balconyExistence = ""
+      let duplex=""
+      if (isBalkoni === "있음") { balconyExistence = true }
+      else { balconyExistence = false }
+
+      if (isBok === "네") { duplex = true }
+      else { duplex = false }
+      navigate('/recommend', {
+        state: {
+          type: "청소",
+          axios_data: result.data,
+          userInput: {
+            "imageFileList": [selectedFiles], // 필요한 경우 이미지 파일 배열로 교체
+            "price": calResult, // 실제 가격 값으로 교체 (긴 정수)
+            "clean": {
+              "reservationTime": `${getToday(startDate)} ${isWhatTime}`, // 실제 carId 값으로 교체 (긴 정수)
+              "address": whereStart.address, // 실제 시작 시간을 올바른 날짜 및 시간 형식으로 교체
+              "addressDetail": detailAddress, // 실제 종료 시간을 올바른 날짜 및 시간 형식으로 교체
+              "sigungu": sigungu, // 실제 출발지 값으로 교체 (문자열)
+              "roomSize": roomSize,
+              "roomCount": roomCount,
+              "windowCount": windowCount,
+              "balconyExistence": balconyExistence,
+              "duplex": duplex,
+              "mold": option.isGom,
+              "externalWindow": option.isOutsideWindow,
+              "houseSyndrome": option.isNewHous,
+              "removeSticker": option.isSticker
+            }
+          }
+        }
+      });
+    } catch (error) {
+
+    }
+
+  }
 
   const goTobeforeForm = () => {
     if (isActive === "second") { setIsActive("first") }
@@ -157,25 +213,14 @@ export default function CleaningFrom() {
 
     return serviceNameMap[key] || key; // key에 해당하는 값이 없을 경우 key 그대로 반환
   };
-  const handleAddButtonClick = (buttonName) => {
-    // Copy the current state
-    const updatedOption = { ...option };
-
-    // Toggle the value for the clicked button
-    updatedOption[buttonName] = !updatedOption[buttonName];
-
-    // Update the state with the new values
-    setOption(updatedOption);
-  };
-
   const axios_cal = async () => {
-    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
+    
     const roomSize = parseInt(whatHouse, 10)
     const roomCount = parseInt(roomCounts, 10)
-    const windowCount =parseInt(windowCounts,10)
-    
+    const windowCount = parseInt(windowCounts, 10)
+
     let balconyExistence = ""
-    let duplex =  ""
+    let duplex = ""
     let mold = ""
     let externalWindow = ""
     let houseSynddrome = ""
@@ -185,12 +230,12 @@ export default function CleaningFrom() {
 
     if (isBok === "네") { duplex = true }
     else { duplex = false }
-    
+
     setIsLoading(true)
     try {
-      const response = await axios.post('http://192.168.45.150:8080/api/clean/user/calculation',
+      const response = await api.post('/clean/user/calculation',
         {
-          "reservationTime":`${getToday(startDate)} ${isWhatTime}`,
+          "reservationTime": `${getToday(startDate)} ${isWhatTime}`,
           "roomSize": roomSize,
           "roomCount": roomCount,
           "windowCount": windowCount,
@@ -207,43 +252,29 @@ export default function CleaningFrom() {
           }
         }
       );
+      setcalResult(response.data.result)
 
-      setcalresult(response.data.result.price)
 
-     
       setIsLoading(false)
 
-      return response
+      return response.data.result
     } catch (error) {
       console.error(error);
       return error
     }
 
   }
-  const axios_CallCLE = async () => {
-    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QxMjM0Iiwicm9sZSI6IlVTRVIiLCJpZCI6NCwic2lndW5ndSI6MTAwLCJpYXQiOjE3MDY3NDc2NzYsImV4cCI6MTcwNzE3OTY3Nn0.0UtQe8QKEO6KriOAAGD5iJTkmyWIqM0WCCpslvOJWLg';
-    // console.log(`${getToday(startDate)} ${isWhatTime}`)
-    console.log(sigungu)
-    try {
-      const response = await axios.post(
-        'http://192.168.45.150:8080/api/clean/user/company-list',
-        {
-          "reservationTime": `${getToday(startDate)} ${isWhatTime}`, // 실제 시작 시간을 올바른 날짜 및 시간 형식으로 교체
-          "sigungu": sigungu, // 실제 sigungu 값으로 교체 (정수)
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-      console.log(response)
-      return response
-    }
-    catch (e) {
+  const handleAddButtonClick = (buttonName) => {
+    // Copy the current state
+    const updatedOption = { ...option };
 
-    }
-  }
+    // Toggle the value for the clicked button
+    updatedOption[buttonName] = !updatedOption[buttonName];
+
+    // Update the state with the new values
+    setOption(updatedOption);
+  };
+
   return (<>
     <div style={{
       position: 'absolute', width: '20%', top: '15%',
@@ -252,6 +283,32 @@ export default function CleaningFrom() {
       <ProgressBar steps={totalSteps} activeStep={activeStep} />
     </div>
     <AnimatePresence>
+      {isModalOpen && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)}
+          style={{
+            zIndex: "99",
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경색 및 투명도 조절
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <div style={{
+            position: 'relative',
+            width: '40%',
+            backgroundColor: 'white', // 내용의 배경색
+            padding: '20px',
+            borderRadius: '8px', // 내용의 모서리 둥글게
+          }}>
+            <Address setSigungu={setSigungu} whatModal={whatModal} setwhereStart={setwhereStart} setwhereEnd={setwhereEnd} setIsModalOpen={setIsModalOpen} />
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
     <AnimatePresence>
       {isLoading && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)}
@@ -283,34 +340,6 @@ export default function CleaningFrom() {
         </motion.div>
       )}
     </AnimatePresence>
-
-      {isModalOpen && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)}
-          style={{
-            zIndex: "99",
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경색 및 투명도 조절
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <div style={{
-            position: 'relative',
-            width: '40%',
-            backgroundColor: 'white', // 내용의 배경색
-            padding: '20px',
-            borderRadius: '8px', // 내용의 모서리 둥글게
-          }}>
-            <Address setSigungu={setSigungu} whatModal={whatModal} setwhereStart={setwhereStart} setwhereEnd={setwhereEnd} setIsModalOpen={setIsModalOpen} />
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-
     <AnimatePresence mode="wait">
 
       {isActive === "first" && <motion.div key="firstForm">
@@ -364,7 +393,7 @@ export default function CleaningFrom() {
               <div>
                 <div className="d-flex gap-5 align-items-center">
                   {/* 첫 번째 라디오 버튼 */}
-                  <div className="d-flex gap-3  " id={selectedOption ? "" :"inputcomponent"}>
+                  <div className="d-flex gap-3  " id={selectedOption ? "" : "inputcomponent"}>
                     <motion.div
                       whileHover={{ cursor: "pointer", scale: 1.1 }}
                       className={`d-flex gap-3 justify-content-center align-items-center ${selectedOption === 'AM' ? 'checked' : ''}`}
@@ -454,12 +483,12 @@ export default function CleaningFrom() {
                 <button onClick={() => hadleModal("start")} className="btn-primary btn col-2 d-flex justify-content-center align-items-center" style={{ height: "2rem" }}><p className="m-0">찾기</p></button>
               </div>
 
-              <div className="col-9 d-flex " id={detailAddress? "" :"secondcomponent"} style={{ width: "100%" }} >
+              <div className="col-9 d-flex " id={detailAddress ? "" : "secondcomponent"} style={{ width: "100%" }} >
                 <div className="col-2 fw-bold">상세주소 : </div>
                 <input style={{ border: "none" }} className="col-10 shadow fw-bold text-center rounded-4 " placeholder="상세주소를 입력해주세요!" type="text" onChange={(event) => setDetailAddress(event.target.value)} ></input>
               </div>
 
-              <div id={whatHouse? "" :"secondcomponent"} className="col-9 d-flex " style={{ width: "100%" }} >
+              <div id={whatHouse ? "" : "secondcomponent"} className="col-9 d-flex " style={{ width: "100%" }} >
                 <div className="col-2 fw-bold">집크기 : </div>
                 <div className="col-12 d-flex gap-2 " >
                   <input style={{ border: "none" }} className="col-8 shadow fw-bold text-center rounded-4 " placeholder="집크기를 입력해주세요!" type="number" onChange={(event) => setWhatHouse(event.target.value)} ></input>
@@ -467,20 +496,20 @@ export default function CleaningFrom() {
                 </div>
               </div>
               <div className="d-flex col-12  gap-4">
-                <div id={roomCounts? "" :"secondcomponent"} className=" d-flex col-6 gap-1 align-items-center"  >
+                <div id={roomCounts ? "" : "secondcomponent"} className=" d-flex col-6 gap-1 align-items-center"  >
                   <div className=" col-4 fw-bold">방개수 : </div>
                   <input style={{ border: "none", height: "2rem" }} className="col-6 shadow fw-bold text-center rounded-4 " placeholder="방개수" type="number" onChange={(event) => setRoomCounts(event.target.value)}></input>
                   <div className="d-flex  align-items-center fw-bold">개</div>
                 </div>
 
-                <div id={windowCounts? "" :"secondcomponent"}  className="d-flex col-6 gap-1 align-items-center"  >
+                <div id={windowCounts ? "" : "secondcomponent"} className="d-flex col-6 gap-1 align-items-center"  >
                   <div className="col-4 fw-bold">창개수 : </div>
                   <input style={{ border: "none", height: "2rem" }} className="col-6 shadow fw-bold text-center rounded-4 " placeholder="창개수" type="number" onChange={(event) => setWindowCounts(event.target.value)} ></input>
                   <div className="d-flex  align-items-center fw-bold ">개</div>
                 </div>
               </div>
 
-              <div id={isBalkoni? "" :"secondcomponent"}  className="d-flex justify-content-center gap-3 align-items-center  col-12">
+              <div id={isBalkoni ? "" : "secondcomponent"} className="d-flex justify-content-center gap-3 align-items-center  col-12">
                 <p className="m-0 col-3 fw-bold">발코니/베란다</p>
                 <div className="col-3">
                   <CheckButton checkPacking={() => setIsBalkoni("있음")} isActive={isBalkoni === "있음"} name="있음" />
@@ -491,7 +520,7 @@ export default function CleaningFrom() {
                 <div className="col-3"></div>
               </div>
 
-              <div id={isBok? "" :"secondcomponent"}  className="d-flex justify-content-center gap-3 align-items-center col-12">
+              <div id={isBok ? "" : "secondcomponent"} className="d-flex justify-content-center gap-3 align-items-center col-12">
                 <p className="m-0 col-3 fw-bold">복층인가요?</p>
                 <div className="col-3">
                   <CheckButton checkPacking={() => setIsBok("네")} isActive={isBok === "네"} name="네" />
@@ -554,7 +583,7 @@ export default function CleaningFrom() {
 
       </motion.div>}
       {isActive === "third" && <div>
-        <motion.h5 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} onClick={goToNextForm} className="d-flex align-items-center gap-2" style={{
+        {/* <motion.h5 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} onClick={goToNextForm} className="d-flex align-items-center gap-2" style={{
           position: 'absolute',
           top: '85%',
           left: '85%',
@@ -563,7 +592,7 @@ export default function CleaningFrom() {
         }}>
           <motion.p className="m-0" style={{ color: "#006EEE" }}>다음으로&rarr;</motion.p>
 
-        </motion.h5>
+        </motion.h5> */}
 
         <motion.h5 initial={{ opacity: 0.1 }} animate={{ opacity: 1 }} exit={{ opacity: 0.1 }} transition={{ duration: 0.3 }} onClick={goTobeforeForm} to="/dashboard" className="d-flex align-items-center gap-2" style={{
           position: 'absolute',
@@ -582,7 +611,7 @@ export default function CleaningFrom() {
           <motion.p className="m-0" style={{ color: "#006EEE" }}>이전으로</motion.p>
         </motion.h5>
 
-        <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ duration: 0.3 }}
+        {calResult && <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ duration: 0.3 }}
           className="col-12 d-flex justify-content-center align-items-center" style={{ marginTop: "11rem" }}>
           <div className="col-5 p-3 d-flex flex-column ">
             <div style={{ borderBottom: "solid 1px #006EEE" }} className="d-flex flex-column gap-3 p-3">
@@ -679,6 +708,10 @@ export default function CleaningFrom() {
                 </div>
               </div>
             </div>
+            <div className="d-flex align-items-center">
+              <p className="m-0 col-4 text-center">예상 가격</p>
+              <p className="fw-bold m-0 col-8 text-center " style={{ textDecoration: "underline" }} >{calResult.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원</p>
+            </div>
             <button onClick={hadlesubmit} className="mt-3 btn btn-primary">제출</button>
           </div>
 
@@ -686,7 +719,7 @@ export default function CleaningFrom() {
 
 
 
-        </motion.div>
+        </motion.div>}
       </div>
       }
 
