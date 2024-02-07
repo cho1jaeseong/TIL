@@ -1,7 +1,5 @@
 // Status.js
 
-import React from 'react';
-
 export default function Status() {
   return (
     <div className="d-flex justify-content-around align-items-center h-100" >

@@ -2,14 +2,15 @@ import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 import DaumPostcode from 'react-daum-postcode';
 import { PRIMARY_COLOR } from '../../App';
+import CompanySignUpForm from './CompanySignUpForm';
 
 const SignUpForm = () => {
   const [selectedButton, setSelectedButton] = useState('');
-  const [serviceButton, setserviceButton] = useState('');
+  const [selectedService, setSelectedService] = useState(null);
   const [address, setAddress] = useState('');
   const [addressDetail, setAddressDetail] = useState('');
   const [sigungu, setSigungu] = useState('');
@@ -22,6 +23,8 @@ const SignUpForm = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [companyFormData, setCompanyFormData] = useState({});
   const navigate = useNavigate();
 
   const {
@@ -52,7 +55,10 @@ const SignUpForm = () => {
   // 이메일 중복 확인
   const checkEmail = async (email) => {
     try {
-      const response = await axios.post('http://192.168.30.206:8080/api/auth/email', { email });
+      const response = await axios.post(
+        'https://i10e108.p.ssafy.io/api/auth/email',
+        { email }
+      );
       if (response.data.isSuccess) {
         alert('사용가능한 이메일 입니다.');
         setIsEmailValid(true);
@@ -68,7 +74,7 @@ const SignUpForm = () => {
   // 핸드폰 인증 코드 전송
   const sendPhoneCode = async (phone) => {
     try {
-      // const response = await axios.post('http://192.168.30.145:8080/api/auth/phone', { phone });
+      // const response = await axios.post('https://i10e108.p.ssafy.io/api/auth/phone', { phone });
       // if (response.data.isSuccess) {
       if (true) {
         alert('인증번호가 전송되었습니다.');
@@ -85,7 +91,7 @@ const SignUpForm = () => {
   // 핸드폰 인증 코드 검증
   const verifyPhoneCode = async (phone, code) => {
     try {
-      // const response = await axios.post('http://192.168.30.145:8080/api/auth/code', { phone, code });
+      // const response = await axios.post('https://i10e108.p.ssafy.io/api/auth/code', { phone, code });
       // if (response.data.isSuccess) {
       if (true) {
         alert('인증되었습니다!');
@@ -99,42 +105,60 @@ const SignUpForm = () => {
     }
   };
 
+  const handleServiceClick = (serviceType) => {
+    // 동일한 서비스를 다시 클릭하면 폼을 숨김
+    if (selectedService === serviceType && isFormVisible) {
+      setIsFormVisible(false);
+      setSelectedService(null);
+    } else {
+      // 다른 서비스를 클릭하면, 폼을 보여주고 새로운 서비스로 업데이트
+      setIsFormVisible(true);
+      setSelectedService(serviceType);
+    }
+  };
+
+  const handleCompanyDataSubmit = (companyData) => {
+    setCompanyFormData(companyData);
+    setIsFormVisible(false);
+    console.log(companyData);
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
-    console.log(data);
-    console.log(address);
-    console.log(sigungu);
-    console.log(addressDetail);
 
     // 모든 확인 절차가 완료되었는지 확인
     if (!isEmailValid || !isPhoneCodeSent || !isPhoneCodeVerified) {
       alert(
         '이메일 중복 검사, 핸드폰 인증 코드 전송, 인증 코드 검증을 모두 완료해야 합니다.'
       );
+      setLoading(false);
       return;
     }
+    // Determine the endpoint based on the selectedButton
+    const endpoint =
+      selectedButton === 'normal'
+        ? 'https://i10e108.p.ssafy.io/api/users'
+        : 'https://i10e108.p.ssafy.io/api/company';
 
-    const { name, email, phone, password } = data;
+    // Include companyFormData if the company option is selected
+    const payload = {
+      ...data,
+      address, // useForm에서 setValue를 통해 설정된 주소 값
+      sigungu,
+      addressDetail,
+      // selectedButton이 'company'일 경우 companyFormData 추가
+      ...(selectedButton === 'company' && companyFormData),
+    };
+    console.log(payload);
+    console.log(companyFormData);
+    console.log(selectedButton);
     try {
-      const response = await axios.post(
-        'http://192.168.30.145:8080/api/users',
-        {
-          name,
-          email,
-          phone,
-          password,
-          address,
-          sigungu,
-          addressDetail,
-        }
-      );
-
+      const response = await axios.post(endpoint, payload);
       if (response.data.isSuccess) {
         alert('Join Success!');
         navigate('/login');
       } else {
-        let message = response.data.message;
-        alert(message);
+        alert(response.data.message);
       }
     } catch (error) {
       console.log(error);
@@ -145,13 +169,9 @@ const SignUpForm = () => {
 
   const handleButtonClick = (buttonType) => {
     if (selectedButton === 'normal') {
-      setserviceButton('');
+      setSelectedService('');
     }
     setSelectedButton(buttonType);
-  };
-
-  const handleServiceClick = (buttonType) => {
-    setserviceButton(buttonType);
   };
 
   function onCompletePost(data) {
@@ -186,6 +206,7 @@ const SignUpForm = () => {
 
       setIsModalOpen(false);
       setAddress(fullAddress + extraAddress);
+
       if (addressDetailRef.current) {
         addressDetailRef.current.focus();
       }
@@ -428,7 +449,7 @@ const SignUpForm = () => {
                 )}
               </div>
               <div className="form-group mb-4">
-                <label htmlFor="region">주소</label>
+                <label htmlFor="address">주소</label>
                 <input
                   id="address"
                   className="form-control rounded-pill py-4"
@@ -455,7 +476,7 @@ const SignUpForm = () => {
                   <button
                     type="button"
                     className={`btn ${
-                      serviceButton === 'clean'
+                      selectedService === 'clean'
                         ? 'btn-primary text-white'
                         : 'btn-outline-primary text-dark'
                     } rounded-pill py-3 mx-2`}
@@ -467,7 +488,7 @@ const SignUpForm = () => {
                   <button
                     type="button"
                     className={`btn ${
-                      serviceButton === 'delivery'
+                      selectedService === 'delivery'
                         ? 'btn-primary text-white'
                         : 'btn-outline-primary text-dark'
                     } rounded-pill py-3 mx-2`}
@@ -476,6 +497,14 @@ const SignUpForm = () => {
                   >
                     용달
                   </button>
+                  {isFormVisible && (
+                    <div className="mt-3">
+                      <CompanySignUpForm
+                        companyType={selectedService}
+                        onCompanyDataSubmit={handleCompanyDataSubmit}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
               <button
@@ -491,6 +520,28 @@ const SignUpForm = () => {
               >
                 Sign Up
               </button>
+              <div
+                style={{
+                  margin: '15px 0',
+                  textAlign: 'center',
+                  fontSize: '16px',
+                  color: '#666666',
+                }}
+              >
+                이미 회원이신가요?
+                <Link
+                  to="/login"
+                  style={{
+                    color: '#2681d9',
+                    textDecoration: 'none',
+                    hover: {
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  로그인
+                </Link>
+              </div>
             </form>
           </div>
         </div>

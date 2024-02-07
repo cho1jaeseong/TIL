@@ -7,13 +7,13 @@ import { api } from "../../services/api";
 
 
 
-export default function RecommendModalComponent({companyId}) {
-    const [serviceInfo,setServiceInfo] = useState(null)
-    useEffect(()=>{
+export default function RecommendModalComponent({ companyId }) {
+    const [serviceInfo, setServiceInfo] = useState(null)
+    useEffect(() => {
         axios_detail()
     }, [])
     const axios_detail = async () => {
-        
+
 
         try {
             const response = await api.get(`/company/${companyId}`, {
@@ -21,7 +21,7 @@ export default function RecommendModalComponent({companyId}) {
                 }
             });
             console.log(response.data.result)
-            setServiceInfo(response.data.result)
+            setServiceInfo(response.data.result) 
             return response
         } catch (error) {
             console.error(error);
@@ -30,17 +30,18 @@ export default function RecommendModalComponent({companyId}) {
 
 
     return (
-        <div className="modal-dialog modal-dialog-scrollable">
+        <>
+        { serviceInfo && <div className="modal-dialog modal-dialog-scrollable">
             <div className="p-3 mt-4 gap-2 d-flex flex-column align-items-center" style={{ width: "100%", borderBottom: "1px solid #888888" }} >
-                <img style={{ width: "7rem", height: "7rem" }} src="/randomimg.png" alt="Random Image" />
+                <img style={{ width: "7rem", height: "7rem" }} src={serviceInfo.imageUrl} alt="Random Image" />
                 <h5 className="m-0">{serviceInfo.name}</h5>
                 <div className="d-flex gap-2">
                     <StarRating rating={serviceInfo.averageScore} />
                     {serviceInfo.averageScore}
                 </div>
                 <div className="d-flex gap-3">
-                    {serviceInfo.mostTag.map(tag=> <div className="border border-primary rounded-5 bg-white text-center shadow" style={{ width: "9rem" }}>
-                       {tag}
+                    {serviceInfo.mostTag.map(tag => <div className="border border-primary rounded-5 bg-white text-center shadow" style={{ width: "9rem" }}>
+                        {tag}
                     </div>)}
 
                 </div>
@@ -54,10 +55,11 @@ export default function RecommendModalComponent({companyId}) {
             </div>
             <div className="p-4 bg-white d-flex flex-column gap-3" >
                 <h5>후기</h5>
-                {serviceInfo.reviewList.map(data=> <RecommendReview tag={data.tagList} img={data.writerProfileImage} name={data.writerName} rating={data.score} date={data.createDt} text={data.content}/>)}
-                
+                {serviceInfo.reviewList.map(data => <RecommendReview tag={data.tagList} img={data.writerProfileImage} name={data.writerName} rating={data.score} date={data.createDt} text={data.content} />)}
+
 
             </div>
-        </div>
+        </div> }
+        </>
     );
 }
