@@ -5,7 +5,7 @@ import StatusChange from './Status_Change';
 import { Client } from "@stomp/stompjs";
 import useAuthStore from '../../../store/store';
 
-export default function Requests({ setOpenRecommendModal, setChoiceCompanyId, isAll, setRequestList, requestList, date, orderName, orderNumber, status, list }) {
+export default function Requests({ setRequestId, Id, setOpenRecommendModal, setChoiceCompanyId, isAll, setRequestList, requestList, date, orderName, orderNumber, status, list }) {
     const [chatRoom, setChatRoom] = useState("")
     const scrollToBottom = () => {
         // 스크롤 위치를 항상 맨 아래로 조절
@@ -224,6 +224,8 @@ export default function Requests({ setOpenRecommendModal, setChoiceCompanyId, is
                                         transition={{ duration: 0.3 }}
                                     >
                                         <DropDown
+                                            setRequestId={setRequestId}
+                                            Id={Id}
                                             setOpenRecommendModal={setOpenRecommendModal}
                                             setChoiceCompanyId={setChoiceCompanyId}
                                             isAll={isAll}

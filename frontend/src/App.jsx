@@ -31,10 +31,10 @@ import CompanyDashBord from './pages/CompanyPage/CompanyDashBord';
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuthStore(); // Access the user state
 
-  if (!user) {
-    // If not authenticated, redirect to the login page
-    return <Navigate to="/login" replace />;
-  }
+  // if (!user) {
+  //   // If not authenticated, redirect to the login page
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return children; // If authenticated, render the children components
 };
@@ -43,9 +43,9 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: (
-      <ProtectedRoute>
+      
         <DashBoard />
-      </ProtectedRoute>
+      
     ),
   },
   // 회원가입

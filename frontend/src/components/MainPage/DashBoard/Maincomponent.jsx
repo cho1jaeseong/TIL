@@ -7,6 +7,7 @@ import { api } from '../../../services/api';
 import useAuthStore from '../../../store/store';
 import RecommendModalComponent from '../../Recommend/RecommendModalComponent';
 import RecommendModal from '../../Recommend/RecommendModal';
+import NewModal from './NewModal';
 
 const MainComponent = () => {
     const [requestAllList, setRequestAllList] = useState([]);
@@ -20,6 +21,10 @@ const MainComponent = () => {
     const navigate = useNavigate();
     const [userInfo, setUserInfo] = useState({ name: '', profileImage: '' });
     const [choicecompanyId, setChoiceCompanyId] = useState(null)
+
+    const [requestCheck, setRequestCheck] = useState(true)
+    const [requestMappingId, setRequestMappingId] = useState(null)
+    const [requestId, setRequestId] = useState(null)
     useEffect(() => {
         const storedUserInfo = localStorage.getItem('userInfo');
         if (storedUserInfo) {
@@ -116,6 +121,7 @@ const MainComponent = () => {
     return (
         <>
             {choicecompanyId && <RecommendModal companyId={choicecompanyId} isOpen={openRecommendModal} closeModal={handleModal} />}
+            {requestId&& requestId.price&& <NewModal setRequestId={setRequestId} requestId={requestId} setRequestMappingId={setRequestMappingId} requestMappingId={requestMappingId} isModalOpen={requestCheck} setIsModalOpen={setRequestCheck} />}
             <div className="d-flex justify-content-center align-items-center" style={{ height: '90vh', width: '100%', marginTop: "10rem" }}>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }} className="col-10">
                     <div className="col-12 px-3">
@@ -172,7 +178,7 @@ const MainComponent = () => {
                                 </div>
                             </div>
                             <div className="col-10 p-5 gap-4 d-flex flex-column" >
-                                
+
                                 <div className="d-flex justify-content-between mx-5">
                                     <div className="bg-white shadow rounded-3 p-2  justify-content-center align-items-center ">
                                         <Status />
@@ -194,7 +200,7 @@ const MainComponent = () => {
                                     <h5 className="m-0  col-md-2">내가 보낸견적서</h5>
                                 </div>
                                 <motion.div style={{ width: '100%', height: '100%' }} className='d-flex flex-column justify-content-between '>
-                                    <div style={{height:"30rem"}}>
+                                    <div style={{ height: "30rem" }}>
                                         {getDisplayedData().length === 0 ? <div style={{ width: "100%", height: "10rem" }} className='d-flex justify-content-center align-items-center gap-3' ><h2 className='m-0'>저희 서비스를 사용해 주세요!</h2><img style={{ width: "4rem" }} src='./free-animated-icon-happy-11175727.gif' /> </div> :
                                             getDisplayedData().map((item, index) => {
                                                 if (requestList === "전체") {
@@ -208,7 +214,7 @@ const MainComponent = () => {
 
 
                                                         let orderN = (item.deliveryReservationDto.id * item.deliveryReservationDto.id).toString().padStart(3, '0').slice(0, 3)
-                                                        return <Requests setOpenRecommendModal={setOpenRecommendModal} setChoiceCompanyId={setChoiceCompanyId} isAll={true} setRequestList={setRequestAllList} requestList="용달" list={item.deliveryReservationDto.list} key={index} date={formatDate} orderName={formatoder} orderNumber={`${orderName}${orderN}`} status={item.deliveryReservationDto.status} />;
+                                                        return <Requests setRequestId={setRequestId} Id={item.deliveryReservationDto.id}  setOpenRecommendModal={setOpenRecommendModal} setChoiceCompanyId={setChoiceCompanyId} isAll={true} setRequestList={setRequestAllList} requestList="용달" list={item.deliveryReservationDto.list} key={index} date={formatDate} orderName={formatoder} orderNumber={`${orderName}${orderN}`} status={item.deliveryReservationDto.status} />;
                                                     }
                                                     else {
 
@@ -220,7 +226,7 @@ const MainComponent = () => {
                                                         let orderName = "CLE";
                                                         let orderN = (item.cleanReservationDto.cleanId * item.cleanReservationDto.cleanId).toString().padStart(3, '0').slice(0, 3);
 
-                                                        return <Requests setOpenRecommendModal={setOpenRecommendModal} setChoiceCompanyId={setChoiceCompanyId} isAll={true} setRequestList={setRequestAllList} requestList="청소" list={item.cleanReservationDto.list} key={index} date={formatDate} orderName={formatoder} orderNumber={`${orderName}${orderN}`} status={item.cleanReservationDto.status} />;
+                                                        return <Requests setRequestId={setRequestId} Id={item.cleanReservationDto.cleanId}  setOpenRecommendModal={setOpenRecommendModal} setChoiceCompanyId={setChoiceCompanyId} isAll={true} setRequestList={setRequestAllList} requestList="청소" list={item.cleanReservationDto.list} key={index} date={formatDate} orderName={formatoder} orderNumber={`${orderName}${orderN}`} status={item.cleanReservationDto.status} />;
                                                     }
                                                 }
                                                 else {
@@ -243,6 +249,8 @@ const MainComponent = () => {
 
                                                     return (
                                                         <Requests
+                                                            setRequestId={setRequestId}
+                                                            Id={requestList === "용달" ? item.id : item.cleanId}
                                                             setOpenRecommendModal={setOpenRecommendModal}
                                                             setChoiceCompanyId={setChoiceCompanyId}
                                                             setRequestList={requestList === "용달" ? setRequestDelList : setRequestCLEList}
