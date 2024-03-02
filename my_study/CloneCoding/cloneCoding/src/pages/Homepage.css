@@ -1,0 +1,14 @@
+
+.startcontainer {
+    background: linear-gradient(rgba(0, 0, 0, 1), transparent, rgba(0, 0, 0, 1)), url('/background.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 40rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    gap: 2rem;
+  }
+  
