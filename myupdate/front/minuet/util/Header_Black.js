@@ -21,6 +21,6 @@ export default Header_Black;
 
 const styles = StyleSheet.create({
   safeArea: { flex: 0, backgroundColor: GlobalColor.colors.primary_black },
-  headerbox: { height: 70, justifyContent: "center", alignItems: "center" },
+  headerbox: { height: 80, justifyContent: "center", alignItems: "center" },
   headerImage: { height: 40, resizeMode: "contain" }, // 또는 "cover"
 });

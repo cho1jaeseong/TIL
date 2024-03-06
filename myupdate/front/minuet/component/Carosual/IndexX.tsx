@@ -1,24 +1,22 @@
 import * as React from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import Animated, {
   Extrapolate,
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
-
+import { fruitItems } from "./utils/items";
 
 import { ElementsText, window } from "./constants";
 import { withAnchorPoint } from "./anchor-point";
 // import { fruitItems } from "./items";
 
-const colors = ["#fda282", "#fdba4e", "#800015"];
-
 const PAGE_WIDTH = window.width;
-const PAGE_HEIGHT = window.width * 1.2;
+const PAGE_HEIGHT = window.width * 2;
 
-function IndexX() {
-  const [isAutoPlay, setIsAutoPlay] = React.useState(true);
+function CardCaro({ data, setModal }) {
+  const [isAutoPlay, setIsAutoPlay] = React.useState(false);
 
   const baseOptions = {
     vertical: false,
@@ -27,50 +25,56 @@ function IndexX() {
   } as const;
 
   return (
-    <View style={{ flex: 1 }}>
-      <Carousel
-        {...baseOptions}
-        loop
-        autoPlay={isAutoPlay}
-        withAnimation={{
-          type: "spring",
-          config: {
-            damping: 13,
-          },
-        }}
-        autoPlayInterval={1500}
-        data={colors}
-        renderItem={({ index, animationValue }) => (
-          <Card
-            animationValue={animationValue}
-            key={index}
-            index={index}
-          />
-        )}
-      />
-    </View>
+    <>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Carousel
+          {...baseOptions}
+          loop
+          autoPlay={isAutoPlay}
+          withAnimation={{
+            type: "spring",
+            config: {
+              damping: 13,
+            },
+          }}
+          autoPlayInterval={1500}
+          data={data}
+          renderItem={({ item, index, animationValue }) => (
+            <Card
+              animationValue={animationValue}
+              uri={item.img_url}
+              title={item.title}
+              key={index}
+              index={index}
+            />
+          )}
+        />
+      </View>
+    </>
   );
 }
 
 const Card: React.FC<{
-  index: number
-  animationValue: Animated.SharedValue<number>
-}> = ({ index, animationValue }) => {
-  const WIDTH = PAGE_WIDTH / 1.5;
-  const HEIGHT = PAGE_HEIGHT / 1.5;
+  uri: string;
+  title: string;
+  index: number;
+  animationValue: Animated.SharedValue<number>;
+}> = ({ title, index, animationValue, uri }) => {
+  const WIDTH = PAGE_WIDTH / 1.2;
+  const HEIGHT = PAGE_HEIGHT / 1.7;
 
   const cardStyle = useAnimatedStyle(() => {
     const scale = interpolate(
       animationValue.value,
       [-0.1, 0, 1],
       [0.95, 1, 1],
-      Extrapolate.CLAMP,
+      Extrapolate.CLAMP
     );
 
     const translateX = interpolate(
       animationValue.value,
       [-1, -0.2, 0, 1],
-      [0, WIDTH * 0.3, 0, 0],
+      [0, WIDTH * 0.3, 0, 0]
     );
 
     const transform = {
@@ -83,7 +87,7 @@ const Card: React.FC<{
             animationValue.value,
             [-1, 0, 0.4, 1],
             [30, 0, -25, -25],
-            Extrapolate.CLAMP,
+            Extrapolate.CLAMP
           )}deg`,
         },
       ],
@@ -93,7 +97,7 @@ const Card: React.FC<{
       ...withAnchorPoint(
         transform,
         { x: 0.5, y: 0.5 },
-        { width: WIDTH, height: HEIGHT },
+        { width: WIDTH, height: HEIGHT }
       ),
     };
   }, [index]);
@@ -102,46 +106,41 @@ const Card: React.FC<{
     const translateX = interpolate(
       animationValue.value,
       [-1, 0, 1],
-      [0, 60, 60],
+      [-30, 0, 30] // 조절 필요한 값
     );
 
     const translateY = interpolate(
       animationValue.value,
       [-1, 0, 1],
-      [0, -40, -40],
+      [-20, 0, -20] // 조절 필요한 값
     );
 
-    const rotateZ = interpolate(
-      animationValue.value,
-      [-1, 0, 1],
-      [0, 0, -25],
-    );
+    const rotateZ = interpolate(animationValue.value, [-1, 0, 1], [0, 0, -25]);
 
     return {
-      transform: [
-        { translateX },
-        { translateY },
-        { rotateZ: `${rotateZ}deg` },
-      ],
+      transform: [{ translateX }, { translateY }, { rotateZ: `${rotateZ}deg` }],
     };
   }, [index]);
 
   return (
     <Animated.View
       style={{
+        marginTop:100,
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        position: "relative",
       }}
     >
       <Animated.View
         style={[
           {
-            backgroundColor: colors[index],
+            backgroundColor: "white",
             alignSelf: "center",
-            justifyContent: "center",
+            justifyContent: "flex-start",
             alignItems: "center",
-            borderRadius: 20,
+
+            paddingHorizontal: 20,
             width: WIDTH,
             height: HEIGHT,
             shadowColor: "#000",
@@ -156,25 +155,25 @@ const Card: React.FC<{
           },
           cardStyle,
         ]}
-      />
-
-      {/* <Animated.Image
-        source={fruitItems[index % 3]}
-        style={[
-          {
-            width: WIDTH * 0.8,
-            borderRadius: 16,
-            justifyContent: "center",
-            alignItems: "center",
-            position: "absolute",
-            zIndex: 999,
-          },
-          blockStyle,
-        ]}
-        resizeMode={"contain"}
-      /> */}
+      >
+        <Animated.Image
+          source={{ uri: uri }}
+          style={[
+            {
+              flex: 1,
+              width: WIDTH * 1,
+              height: WIDTH,
+            },
+            blockStyle,
+          ]}
+          resizeMode={"stretch"}
+        />
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: "black", fontWeight: "bold" }}>{title}</Text>
+        </View>
+      </Animated.View>
     </Animated.View>
   );
 };
 
-export default IndexX;
+export default CardCaro;

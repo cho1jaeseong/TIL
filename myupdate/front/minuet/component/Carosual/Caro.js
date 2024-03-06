@@ -1,34 +1,29 @@
-import * as React from 'react';
-import { Dimensions, Text, View } from 'react-native';
-import Carousel from 'react-native-reanimated-carousel';
+import * as React from "react";
+import { Dimensions, Text, View } from "react-native";
+import Carousel from "react-native-reanimated-carousel";
+import { SBImageItem } from "./SBImageItem";
 
-function Caro() {
-    const width = Dimensions.get('window').width;
-    return (
-        <View style={{ flex: 1 }}>
-            <Carousel
-                loop
-                width={width}
-                height={width / 2}
-                autoPlay={true}
-                data={[...new Array(6).keys()]}
-                scrollAnimationDuration={1000}
-                renderItem={({ index }) => (
-                    <View
-                        style={{
-                            flex: 1,
-                            borderWidth: 1,
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text style={{ textAlign: 'center', fontSize: 30 }}>
-                            {index}
-                        </Text>
-                    </View>
-                )}
-            />
-        </View>
-    );
+function Caro({ data }) {
+  const width = Dimensions.get("window").width;
+  return (
+    <View style={{ flex: 1 }}>
+      <Carousel
+        loop={true}
+        width={width}
+        height={width / 1.3}
+        autoPlay={true}
+        data={data}
+        scrollAnimationDuration={1000}
+        renderItem={({ index, item }) => (
+          <SBImageItem
+            index={index}
+            title={item.title}
+            img_url={item.img_url}
+          />
+        )}
+      />
+    </View>
+  );
 }
 
 export default Caro;

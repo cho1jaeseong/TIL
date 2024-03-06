@@ -1,10 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
+import { View, Text, StyleSheet, TextInput, Pressable, SafeAreaView } from "react-native";
 import { GlobalColor } from "../../util/colors";
 
 const Start = ({ navigation }) => {
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.upperContainer}>
                 <Text style={styles.text}>
                     뉴스의 모든것
@@ -37,7 +37,7 @@ const Start = ({ navigation }) => {
                     </View>
                 </Pressable>
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -66,11 +66,11 @@ const styles = StyleSheet.create({
         flex: 2,
         justifyContent: 'center',
         alignItems: 'flex-start',
-        paddingLeft: 16
+        paddingLeft: 32
     },
     middleContainer: {
         flex: 2,
-        paddingLeft: 16
+        paddingLeft: 32
     },
     bottomContainer: {
         flex: 3,

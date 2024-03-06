@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import Home from "./Test/Home";
 import Test from "./Test/Test";
 import store from "./store/store";
-import Register from "./secreens/Register/Register";
+// import Register from "./secreens/Register/Register";
 import Start from "./secreens/Start/Start";
 import Login from "./secreens/Login/Login";
 import Email from "./secreens/Register/Email";
@@ -78,18 +78,17 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Tab">
+        <Stack.Navigator initialRouteName="Tap">
           <Stack.Screen
             name="Tab"
             component={MyTabs}
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Test" component={Test} />
-          <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="Start" component={Start} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Email" component={Email} />
+          <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+          <Stack.Screen name="Test" component={Test} options={{ headerShown: false  }} />
+          <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} /> 
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} /> 
+          <Stack.Screen name="Email" component={Email} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

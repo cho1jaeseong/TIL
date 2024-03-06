@@ -1,7 +1,7 @@
 import type { ScaledSize } from "react-native";
 import { Dimensions } from "react-native";
 
-import { isWeb } from "./utils";
+import { isWeb } from "../utils";
 
 export const HEADER_HEIGHT = 100;
 

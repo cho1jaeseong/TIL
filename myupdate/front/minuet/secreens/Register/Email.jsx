@@ -1,30 +1,65 @@
-import React from "react";
-import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TextInput, Pressable, SafeAreaView } from "react-native";
 import { GlobalColor } from "../../util/colors";
+import { useDispatch } from "react-redux";
+import { setCreateUserEmail } from "../../store/createUserSlice";
+import Header_Black from "../../util/Header_Black";
+import { StatusBar } from "expo-status-bar";
 
-const Email = () => {
+const Email = ({ navigation }) => {
+
+    const [email, setEmail] = useState('')
+    const [isValidEmail, setIsValidEmail] = useState(false);
+    const dispatch = useDispatch()
+
+    // 이메일 유효성 검사 함수
+    const validateEmail = (text) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        setIsValidEmail(regex.test(text));
+        setEmail(text);
+    }
+
+    const createUserEmail = () => {
+        dispatch(setCreateUserEmail(email))
+        navigation.navigate('Password')
+    }
+
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
+            <Header_Black/>
             <View style={styles.upperContainer}>
                 <Text style={styles.text}>
-                    패스워드를 입력해주세요
+                    이메일을 입력해주세요
                 </Text>
             </View>
             <View style={styles.middleContainer}>
                 <View style={styles.inputContainer}>
-                    <TextInput placeholder="패스워드" style={styles.inputText} />
+                    <TextInput placeholder="이메일" style={styles.inputText} value={email} onChangeText={(e) => validateEmail(e)} />
                 </View>
             </View>
             <View style={styles.bottomContainer}>
-                <Pressable>
-                    <View>
-                        <Text>
-                            확인
-                        </Text>
-                    </View>
-                </Pressable>
+                {email ?
+                    <>
+                        {isValidEmail ?
+                            <Pressable style={styles.button} onPress={() => createUserEmail()}>
+                                <View>
+                                    <Text style={styles.whiteText} >
+                                        확인
+                                    </Text>
+                                </View>
+                            </Pressable>
+                            :
+                            <Text>
+                                유효하지 않은 이메일 형식 입니다.
+                            </Text>
+                        }
+                    </>
+                    :
+                    <></>
+                }
             </View>
-        </View>
+            <StatusBar style="light"/>
+        </SafeAreaView>
     );
 };
 
@@ -48,22 +83,36 @@ const styles = StyleSheet.create({
     },
     upperContainer: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
         alignItems: 'flex-start',
-        paddingLeft: 16
+        paddingLeft: 32
     },
     middleContainer: {
-        flex: 2,
-        paddingLeft: 16,
+        flex: 1,
+        paddingLeft: 32,
         alignContent: 'center',
         justifyContent: 'center'
     },
     bottomContainer: {
-        flex: 2,
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         gap: 20,
     },
+    button: {
+        backgroundColor: GlobalColor.colors.primary_black,
+        width: '80%',
+        height: 50,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    whiteText: {
+        color: 'white',
+        width: '100%',
+        fontSize: 18,
+        fontWeight: 'bold',
+    }
 });
 
 export default Email;

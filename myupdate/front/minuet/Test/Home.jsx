@@ -6,6 +6,8 @@ const Home = ({navigation}) => {
     
     const dispatch = useDispatch()
     const testValue = useSelector(state => state.test)
+    const createUserInfo = useSelector(state => state.createUser)
+    console.log(createUserInfo)
 
     return (
         <View>

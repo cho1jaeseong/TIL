@@ -44,7 +44,7 @@ const MainPage = () => {
           </View>
         </View>
       </View>
-      <StatusBar style="light" />
+      
     </>
   );
 };
